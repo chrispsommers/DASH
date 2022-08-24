@@ -74,6 +74,8 @@ Two anticipated applications (see Figure below):
 
 ![confgen-apps](confgen-apps.svg)
 
+## SAI-Challenger Integration
+![confgen-saichallenger.svg](confgen-saichallenger.svg)
 # TODO
 * Reconcile the param dicts vs. param attributes obtained via Munch, use of scalar variables inside performance-heavy loops etc. There is a tradeoff between elegance, expressiveness and performance.
 # IDEAS/Wish-List
