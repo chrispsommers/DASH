@@ -79,7 +79,7 @@ The figure below depicts the integration of the *dashgen* configuration generato
 
 The generator is one of several options to produce SAI configuration *records* which are applied to the DUT via one of several possible APIs, including saithrift, sairedis, gNMI, etc. The generator can provide streaming records which are translated on-the-fly into appropriate device API calls.
 
-In addition, the generator can produce texttual representations (e.g. JSON, YAML) of configuration records for usage as stored configurations which the framework can consume as test data input. Configuration files can be produced by other means including other scripts, text-editors, etc.
+In addition, the generator can produce textual representations (e.g. JSON, YAML) of configuration records for usage as stored configurations which the framework can consume as test data input. Configuration files can be produced by other means including other scripts, text-editors, etc.
 
 Finally, the framework can use literal configuration declarations represented as JSON, YAML, Python structures, etc. embedded directly into test-case code. This makes the most sense when the test cases are relatively simple.
 
