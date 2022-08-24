@@ -75,6 +75,16 @@ Two anticipated applications (see Figure below):
 ![confgen-apps](confgen-apps.svg)
 
 ## SAI-Challenger Integration
+The figure below depicts the integration of the *dashgen* configuration generator and the SAI-Challenger pytest framework.
+
+The generator is one of several options to produce SAI configuration *records* which are applied to the DUT via one of several possible APIs, including saithrift, sairedis, gNMI, etc. The generator can provide streaming records which are translated on-the-fly into appropriate device API calls.
+
+In addition, the generator can produce texttual representations (e.g. JSON, YAML) of configuration records for usage as stored configurations which the framework can consume as test data input. Configuration files can be produced by other means including other scripts, text-editors, etc.
+
+Finally, the framework can use literal configuration declarations represented as JSON, YAML, Python structures, etc. embedded directly into test-case code. This makes the most sense when the test cases are relatively simple.
+
+Due to schema and/or semantic differences, a separate gNMI configuration generator might be preferred vs. translating the canonical SAI records into equivalent gNMI records for application to the gNMI interface.
+
 ![confgen-saichallenger.svg](confgen-saichallenger.svg)
 # TODO
 * Reconcile the param dicts vs. param attributes obtained via Munch, use of scalar variables inside performance-heavy loops etc. There is a tradeoff between elegance, expressiveness and performance.
