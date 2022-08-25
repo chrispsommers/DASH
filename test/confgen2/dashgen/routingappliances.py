@@ -6,12 +6,11 @@ from copy import deepcopy
 import sys
 class RoutingAppliances(ConfBase):
 
-    def __init__(self, params={}):
-        super().__init__('routing-appliances', params)
+    def __init__(self, params={}, args=None):
+        super().__init__('routing-appliances', params, args)
     
     def items(self):
-        self.numYields = 0
-        print('  Generating %s...' % self.dictName(), file=sys.stderr)
+        log_msg('  Generating %s...' % self.dictName(), self.args.verbose)
         p=self.params
         cp=self.cooked_params
         # optimizations:
@@ -52,7 +51,8 @@ class RoutingAppliances(ConfBase):
                         "vni-key": r_vpc
                     },
                 }
-        log_memory('    %s: yielded %d items' % (self.dictName(), self.numYields))
+        log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
+        log_msg('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()), self.args.detailed_stats)
 
 if __name__ == "__main__":
     conf=RoutingAppliances()

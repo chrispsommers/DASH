@@ -13,20 +13,20 @@ args = parser.parse_args()
 
 class DashConfig(ConfBase):
 
-        def __init__(self, params={}):
-                super().__init__('dash-config', params)
+        def __init__(self, params={}, args=None):
+                super().__init__('dash-config', params, args)
 
         def generate(self):
                 # Pass top-level params to sub-generrators.
                 # Future - can pass some overridden values if needed.
-                enis = dashgen.enis.Enis(self.params_dict)
-                aclgroups = dashgen.aclgroups.AclGroups(self.params_dict)
-                vpcs = dashgen.vpcs.Vpcs(self.params_dict)
-                vpcmappingtypes = dashgen.vpcmappingtypes.VpcMappingTypes(self.params_dict)
-                vpcmappings = dashgen.vpcmappings.VpcMappings(self.params_dict)
-                routingappliances = dashgen.routingappliances.RoutingAppliances(self.params_dict)
-                routetables = dashgen.routetables.RouteTables(self.params_dict)
-                prefixtags = dashgen.prefixtags.PrefixTags(self.params_dict)
+                enis = dashgen.enis.Enis(self.params_dict, self.args)
+                aclgroups = dashgen.aclgroups.AclGroups(self.params_dict, args)
+                vpcs = dashgen.vpcs.Vpcs(self.params_dict, args)
+                vpcmappingtypes = dashgen.vpcmappingtypes.VpcMappingTypes(self.params_dict, args)
+                vpcmappings = dashgen.vpcmappings.VpcMappings(self.params_dict, args)
+                routingappliances = dashgen.routingappliances.RoutingAppliances(self.params_dict, args)
+                routetables = dashgen.routetables.RouteTables(self.params_dict, args)
+                prefixtags = dashgen.prefixtags.PrefixTags(self.params_dict, args)
 
                 self.configs = [
                         enis,
@@ -38,7 +38,7 @@ class DashConfig(ConfBase):
                         routetables,
                         prefixtags
                 ]
-                log_memory("Generators instantiated")
+                log_memory("Generators instantiated", self.args.detailed_stats)
 
                 # This instantiates config in-memory - could use if want to output with orjson for speed
                 # def toDict(self):
@@ -52,13 +52,23 @@ class DashConfig(ConfBase):
                 return {x.dictName():x.items() for x in self.configs}
 
         def items(self):
+                """Expensive - runs all generators"""
                 return (c.items() for c in self.configs)
+
+        def __str__(self):
+                """String repr of all items in generator"""
+                return '%s: %d total items:\n' % (self.dictName(), sum(c.itemsGenerated() for c in self.configs)) + \
+                        '  ' +\
+                        '\n  '.join(c.__str__() for c in self.configs)
+
 
 if __name__ == "__main__":
     conf=DashConfig()
     common_parse_args(conf)
 
-    log_memory("Start")
+    log_memory("Start", conf.args.detailed_stats)
     conf.generate()
     common_output(conf)
-    log_memory("Done")
+    if conf.args.summary_stats:
+        print (conf.__str__(), file=sys.stderr)
+    log_memory("Done", conf.args.detailed_stats)

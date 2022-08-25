@@ -7,13 +7,20 @@ import io, sys
 import pprint
 import argparse,textwrap
 
-def log_memory(msg=''):
+def log_memory(msg='', show=True):
+    if not show:
+        return
     if "linux" in sys.platform.lower():
         to_MB = 1024
     else:
         to_MB = 1024 * 1024
     print("%s: Memory: %.1f MB, " % (msg,
         resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / to_MB),file=sys.stderr)
+
+def log_msg(msg='', show=True):
+    if not show:
+        return
+    print(msg, file=sys.stderr)
 
 
 # From https://stackoverflow.com/questions/12670395/json-encoding-very-long-iterators
@@ -61,25 +68,25 @@ class IterEncoder(json.JSONEncoder):
         return super().default(o)
 
 def writeListFileIter(config, format, filename='<stdout>'):
-    log_memory("writeListFileIter enter")
+    # log_memory("writeListFileIter enter")
     if filename == '<stdout>':
         writeListFpIter(config, format, sys.stdout)
     else:
         with open(filename, "wt") as file:
             writeListFpIter(config, format, fp)
-    log_memory("writeListFileIter exit")
+    # log_memory("writeListFileIter exit")
 
 def writeListFpIter(config, format, fp):
-    log_memory("writeListFpIter enter")
+    # log_memory("writeListFpIter enter")
     if format == 'json':
         json.dump(config, fp, cls=IterEncoder,indent = 2, separators=(',', ': '))
     else:
         raise NotImplementedError('ERROR: unsupported format %s' % format)
-    log_memory("writeListFpIter exit")
+    # log_memory("writeListFpIter exit")
 
 # TODO - consider generic recursive approach
 def writeDictFileIter(config, format, filename='<stdout>'):
-    log_memory("writeDictFileIter enter")
+    # log_memory("writeDictFileIter enter")
 
     def _writeDictFileIter(config, fp):
         fp.write('{\n')
@@ -90,7 +97,7 @@ def writeDictFileIter(config, format, filename='<stdout>'):
             fp.write('  "%s":\n' % key)
             json.dump(list, fp, cls=IterEncoder,indent = 2, separators=(',', ': '))
             first = False
-            log_memory("    wrote dict item '%s'" % key)
+            # log_memory("    wrote dict item '%s'" % key)
         fp.write('\n}\n')
 
     if format == 'json':
@@ -104,7 +111,7 @@ def writeDictFileIter(config, format, filename='<stdout>'):
     else:
         raise NotImplementedError('ERROR: unsupported format %s' % format)
 
-    log_memory("writeDictFileIter exit")
+    # log_memory("writeDictFileIter exit")
 
 common_arg_epilog='''
 Usage:
@@ -164,6 +171,19 @@ def commonArgParser():
             '-o', '--output', default='<stdout>', metavar='OFILE',
             help="Output file (default: standard output)")
 
+
+    parser.add_argument(
+            '-s', '--summary-stats', action='store_true',
+            help="show summary stats at end)")
+
+    parser.add_argument(
+            '-S', '--detailed-stats', action='store_true',
+            help="show detailed stats throughout operation)")
+
+    parser.add_argument(
+            '-v', '--verbose', action='store_true',
+            help="show detailed messages throughout operation)")
+
     return parser
 
 def common_parse_args(self, parser=commonArgParser()):
@@ -199,6 +219,8 @@ def common_output(self):
 def common_main(self):
     common_parse_args(self)
 
-    log_memory("Start")
+    log_memory("Start", self.args.detailed_stats)
     common_output(self)
-    log_memory("Done")
+    if self.args.summary_stats:
+        print (self.__str__(), file=sys.stderr)
+    log_memory("Done", self.args.detailed_stats)

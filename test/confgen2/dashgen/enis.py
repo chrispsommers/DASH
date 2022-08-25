@@ -5,8 +5,8 @@ from confutils import *
 import sys
 class Enis(ConfBase):
 
-    def __init__(self, params={}):
-        super().__init__('enis', params)
+    def __init__(self, params={}, args=None):
+        super().__init__('enis', params, args)
  
     class AclsV4In(ConfBase):
         def __init__(self, params={}, args=None):
@@ -28,6 +28,7 @@ class Enis(ConfBase):
 
                 stage = (table_index - 1) % 3 + 1
                 if table_index < 4:
+                    self.numYields+=1
                     yield \
                         {
                             "acl-group-id": "acl-group-%d" % table_id,
@@ -63,6 +64,7 @@ class Enis(ConfBase):
                     continue
                     
                 else:
+                    self.numYields+=1
                     yield \
                         {
                             "acl-group-id": "acl-group-%d" % table_id,
@@ -72,11 +74,11 @@ class Enis(ConfBase):
 
     def items(self):
         self.numYields = 0
-        print('  Generating %s...' % self.dictName(), file=sys.stderr)
+        log_msg('  Generating %s...' % self.dictName(), self.args.verbose)
         p=self.params
         cp=self.cooked_params
-        acl_in = self.AclsV4In(self.params)
-        acl_out = self.AclsV4Out(self.params)
+        self.acl_in = self.AclsV4In(self.params)
+        self.acl_out = self.AclsV4Out(self.params)
 
         for eni_index in range(1, p.ENI_COUNT+1):
             local_mac = str(macaddress.MAC(int(cp.MAC_L_START)+(eni_index - 1)*int(macaddress.MAC(p.ENI_MAC_STEP)))).replace('-', ':')
@@ -114,12 +116,22 @@ class Enis(ConfBase):
                         ],
                         # "acls-v4-in": acls_v4_in,
                         # "acls-v4-out": acls_v4_out,
-                        acl_in.dictName(): (x for x in acl_in.items(eni_index)),
-                        acl_out.dictName(): (x for x in acl_out.items(eni_index)),
+                        self.acl_in.dictName(): (x for x in self.acl_in.items(eni_index)),
+                        self.acl_out.dictName(): (x for x in self.acl_out.items(eni_index)),
                         "route-table-v4": "route-table-%d" % eni_index
                     },
                 }
-        log_memory('    %s: yielded %d items' % (self.dictName(), self.numYields))
+        log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
+        log_msg('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()), self.args.detailed_stats)
+        log_msg('    %s: yielded %d items' % (self.acl_in.dictName(), self.acl_in.itemsGenerated()), self.args.detailed_stats)
+        log_msg('    %s: yielded %d items' % (self.acl_out.dictName(), self.acl_out.itemsGenerated()), self.args.detailed_stats)
+
+    def __str__(self):
+            subgens = [self.acl_in,self.acl_out]
+            """String repr of all items in generator"""
+            return '%s: %d total items:\n' % (self.dictName(), sum(c.itemsGenerated() for c in subgens)) + \
+                    '    ' +\
+                    '\n    '.join(c.__str__() for c in subgens)
 
 if __name__ == "__main__":
     conf=Enis()
@@ -143,7 +155,7 @@ python3 dashgen/enis.py -aA -i 3                              - generate acl-in 
     ''')
 
     common_parse_args(conf, parser)         
-    log_memory("Start")
+    log_memory("Start", conf.args.detailed_stats)
     suppress_top_level = False
 
     if conf.args.acls_in:
@@ -159,4 +171,4 @@ python3 dashgen/enis.py -aA -i 3                              - generate acl-in 
     if not suppress_top_level:
         common_output(conf)
 
-    log_memory("Done")
+    log_memory("Done", conf.args.detailed_stats)

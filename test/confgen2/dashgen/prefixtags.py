@@ -5,12 +5,12 @@ from confutils import *
 import sys
 class PrefixTags(ConfBase):
 
-    def __init__(self, params={}):
-        super().__init__('prefix-tags', params)
+    def __init__(self, params={}, args=None):
+        super().__init__('prefix-tags', params, args)
 
     def items(self):
         self.numYields = 0
-        print('  Generating %s...' % self.dictName(), file=sys.stderr)
+        print('  Generating %s...' % self.dictName(), self.args.verbose)
         p=self.params
         cp=self.cooked_params
         for eni_index in range(1, p.ENI_COUNT+1):
@@ -40,8 +40,11 @@ class PrefixTags(ConfBase):
                         ]
                     },
                 }
-        log_memory('    %s: yielded %d items' % (self.dictName(), self.numYields))
+        log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
+        print('    %s: yielded %d items' % (self.dictName(), self.numYields), self.args.detailed_stats)
             
 if __name__ == "__main__":
     conf=PrefixTags()
+    log_memory("Start", conf.args.detailed_stats)
     common_main(conf)
+    log_memory("Done", conf.args.detailed_stats)

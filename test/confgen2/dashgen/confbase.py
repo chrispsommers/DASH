@@ -64,8 +64,12 @@ class ConfBase(ABC):
         return len(self.items())
 
     def itemsGenerated(self):
-        """ Last count of # yields, reset each time at begining"""
-        return self.num_yields
+        """ Last count of # yields, accumulates each yield until cleared"""
+        return self.numYields
+
+    def clearCounts(self):
+        """ Reset count of # yields"""
+        self.numYields=0
 
     def dictName(self):
         return self._dictname
@@ -77,13 +81,15 @@ class ConfBase(ABC):
         return self.params_dict
 
     def getMeta(self, message=''):
-        """Generate metadata. FOr reference, could also add e.g. data to help drive tests"""
+        """Generate metadata. For reference, could also add e.g. data to help drive tests"""
         return { 'meta': { 
                     'tstamp': datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                     'msg': message,
                     'params': self.getParams()
                 }
             }
+    def __str__(self):
+        return '%s: %d items' % (self.dictName(), self.itemsGenerated())
 
     def pretty(self):
         pprint.pprint(self.toDict())

@@ -129,33 +129,38 @@ sys	0m1.904s
 ```
 ## confgen2
 ```
-chris@chris-z4:~/chris-DASH/DASH/test/confgen2$ time python3 generate.d.py -f json  -c dict -o dict_hero.json
-Generating config
-Generators instantiated: Memory: 14.0 MB, 
-Start: Memory: 14.0 MB, 
-  Generating vpc-mappings-routing-types...
-writeDictFileIter enter: Memory: 14.0 MB, 
-Writing the json config to dict_hero.json...
+Start: Memory: 19.1 MB, 
+Generators instantiated: Memory: 19.1 MB, 
+writeDictFileIter enter: Memory: 19.1 MB, 
+Writing the json config to tmp_hero.json...
   Generating enis...
-wrote dict item 'enis': Memory: 14.1 MB, 
+    enis: yielded 8 items: Memory: 19.1 MB, 
+    wrote dict item 'enis': Memory: 19.1 MB, 
   Generating acl-groups...
-items() exit: Memory: 84.4 MB, 
-wrote dict item 'acl-groups': Memory: 84.4 MB, 
+    acl-groups: yielded 48 items: Memory: 19.4 MB, 
+    wrote dict item 'acl-groups': Memory: 19.4 MB, 
   Generating vpc...
-wrote dict item 'vpc': Memory: 84.4 MB, 
-wrote dict item 'vpc-mappings-routing-types': Memory: 84.4 MB, 
+    vpc: generated 16 items: Memory: 19.4 MB, 
+    wrote dict item 'vpc': Memory: 19.4 MB, 
+  Generating vpc-mappings-routing-types...
+    vpc-mappings-routing-types: generated 3 items: Memory: 19.4 MB, 
+    wrote dict item 'vpc-mappings-routing-types': Memory: 19.4 MB, 
   Generating vpc-mappings...
-wrote dict item 'vpc-mappings': Memory: 324.0 MB, 
+    vpc-mappings: yielded 16 items: Memory: 19.4 MB, 
+    wrote dict item 'vpc-mappings': Memory: 19.4 MB, 
   Generating routing-appliances...
-wrote dict item 'routing-appliances': Memory: 324.0 MB, 
+    routing-appliances: yielded 16 items: Memory: 19.4 MB, 
+    wrote dict item 'routing-appliances': Memory: 19.4 MB, 
   Generating route-tables...
-wrote dict item 'route-tables': Memory: 324.0 MB, 
+    route-tables: yielded 8 items: Memory: 19.4 MB, 
+    wrote dict item 'route-tables': Memory: 19.4 MB, 
   Generating prefix-tags...
-wrote dict item 'prefix-tags': Memory: 324.0 MB, 
-writeDictFileIter exit: Memory: 324.0 MB, 
-Done: Memory: 324.0 MB, 
+    prefix-tags: yielded 16 items: Memory: 19.4 MB, 
+    wrote dict item 'prefix-tags': Memory: 19.4 MB, 
+writeDictFileIter exit: Memory: 19.4 MB, 
+Done: Memory: 19.4 MB, 
 
-real	1m34.455s
-user	1m32.602s
-sys	0m1.462s
+real	1m33.970s
+user	1m32.159s
+sys	0m1.344s
 ```

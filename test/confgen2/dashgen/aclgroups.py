@@ -6,8 +6,8 @@ from copy import deepcopy
 import sys
 class AclGroups(ConfBase):
 
-    def __init__(self, params={}):
-        super().__init__('acl-groups', params)
+    def __init__(self, params={}, args=None):
+        super().__init__('acl-groups', params, args)
     class AclRulesIpv4(ConfBase):
         def __init__(self, params={}, args=None):
             super().__init__('rules', params, args)
@@ -61,6 +61,7 @@ class AclGroups(ConfBase):
                     "src_addrs": ip_list_a[:],
                     "dst_addrs":  ip_list_a[:],
                 }
+                self.numYields+=1
                 yield deepcopy(rule_a)
 
                 # rule_id_d = rule_id_a + 1
@@ -76,6 +77,7 @@ class AclGroups(ConfBase):
                     "src_addrs": ip_list_d[:],
                     "dst_addrs":  ip_list_d[:],
                 }
+                self.numYields+=1
                 yield deepcopy(rule_d)
 
             # add as last rule in last table from ingress and egress an allow rule for all the ip's from egress and ingress
@@ -99,11 +101,11 @@ class AclGroups(ConfBase):
                     "src_addrs": ip_list_all[:],
                     "dst_addrs":  ip_list_all[:],
                 }
+                self.numYields+=1
                 yield deepcopy(rule_allow_all)
     
     def items(self):
-        self.numYields = 0
-        print('  Generating %s...' % self.dictName(), file=sys.stderr)
+        log_msg('  Generating %s...' % self.dictName(), self.args.verbose)
         p=self.params
         cp=self.cooked_params
         IP_STEP1=cp.IP_STEP1
@@ -117,7 +119,7 @@ class AclGroups(ConfBase):
         ACL_RULES_NSG=p.ACL_RULES_NSG
         IP_PER_ACL_RULE=p.IP_PER_ACL_RULE
         
-        rules = self.AclRulesIpv4(self.params)
+        self.rules = self.AclRulesIpv4(self.params)
 
         for eni_index in range(1, p.ENI_COUNT + 1):
             local_ip = IP_L_START + (eni_index - 1) * IP_STEP4
@@ -196,15 +198,26 @@ class AclGroups(ConfBase):
                         "ACL-GROUP:ENI:%d:TABLE:%d" % (eni_index, table_id): {
                             "acl-group-id": "acl-group-%d" % table_id,
                             "ip_version": "IPv4",
-                            rules.dictName(): (x for x in rules.items(eni_index, table_index)),
+                            self.rules.dictName(): (x for x in self.rules.items(eni_index, table_index)),
                             
                         }
                     }
                 
                 self.numYields+=1
                 yield acl_group
-        log_memory('    %s: yielded %d items' % (self.dictName(), self.numYields))
+        log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
+        log_msg('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()), self.args.detailed_stats)
+        log_msg('    %s: yielded %d items' % (self.rules.dictName(), self.rules.itemsGenerated()), self.args.detailed_stats)
+
+    def __str__(self):
+            subgens = [self.rules]
+            """String repr of all items in generator"""
+            return '%s: %d total items:\n' % (self.dictName(), sum(c.itemsGenerated() for c in subgens)) + \
+                    '    ' +\
+                    '\n    '.join(c.__str__() for c in subgens)
 
 if __name__ == "__main__":
     conf=AclGroups()
+    log_memory("Start", conf.args.detailed_stats)
     common_main(conf)
+    log_memory("Done", conf.args.detailed_stats)

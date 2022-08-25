@@ -6,11 +6,11 @@ from copy import deepcopy
 import sys
 class VpcMappings(ConfBase):
 
-    def __init__(self, params={}):
-        super().__init__('vpc-mappings', params)
+    def __init__(self, params={}, args=None):
+        super().__init__('vpc-mappings', params, args)
     class RemoteVpcMappings(ConfBase):
         def __init__(self, params={}, args=None):
-            super().__init__('vpc-mappings', params, args)
+            super().__init__('mappings', params, args)
             if hasattr(self, 'args'):
                 self.eni_index = self.args.eni_index
                 self.table_index = self.args.table_index
@@ -41,7 +41,6 @@ class VpcMappings(ConfBase):
             IP_MAPPED_PER_ACL_RULE=p.IP_MAPPED_PER_ACL_RULE
 
             par = PAR + eni_index*IP_STEP1
-            pal = PAL + eni_index*IP_STEP1
             for table_index in range(1, (ACL_TABLE_COUNT*2+1)):
                 for ip_index in range(1, (ACL_RULES_NSG+1)):
                     remote_ip = IP_R_START + (eni_index - 1) * IP_STEP4 + (table_index - 1) * 4 * IP_STEP3 + (ip_index - 1) * IP_STEP2
@@ -61,6 +60,8 @@ class VpcMappings(ConfBase):
                                 int(macaddress.MAC(remote_mac)) + i
                             )
                         ).replace('-', ':')
+                        
+                        self.numYields+=1
                         yield \
                             {
                                 "routing-type": "vpc-direct",
@@ -70,29 +71,28 @@ class VpcMappings(ConfBase):
                             }
     
     def items(self):
-        self.numYields = 0
-        print('  Generating %s...' % self.dictName(), file=sys.stderr)
+        log_msg('  Generating %s...' % self.dictName(), self.args.verbose)
         p=self.params
         cp=self.cooked_params
         PAL = cp.PAL
-        PAR = cp.PAR
+        # PAR = cp.PAR
         IP_STEP1=cp.IP_STEP1
-        IP_STEP2=cp.IP_STEP2
-        IP_STEP3=cp.IP_STEP3
+        # IP_STEP2=cp.IP_STEP2
+        # IP_STEP3=cp.IP_STEP3
         IP_STEP4=cp.IP_STEP4
-        IP_R_START=cp.IP_R_START
+        # IP_R_START=cp.IP_R_START
         IP_L_START=cp.IP_L_START
-        ACL_TABLE_COUNT=p.ACL_TABLE_COUNT
-        ACL_RULES_NSG=p.ACL_RULES_NSG
+        # ACL_TABLE_COUNT=p.ACL_TABLE_COUNT
+        # ACL_RULES_NSG=p.ACL_RULES_NSG
         ENI_MAC_STEP=p.ENI_MAC_STEP
         MAC_L_START=cp.MAC_L_START
-        ACL_TABLE_MAC_STEP=p.ACL_TABLE_MAC_STEP
-        ACL_POLICY_MAC_STEP=p.ACL_POLICY_MAC_STEP
-        IP_MAPPED_PER_ACL_RULE=p.IP_MAPPED_PER_ACL_RULE
+        # ACL_TABLE_MAC_STEP=p.ACL_TABLE_MAC_STEP
+        # ACL_POLICY_MAC_STEP=p.ACL_POLICY_MAC_STEP
+        # IP_MAPPED_PER_ACL_RULE=p.IP_MAPPED_PER_ACL_RULE
         ENI_COUNT=p.ENI_COUNT
 
         
-        r_mappings = self.RemoteVpcMappings(self.params)
+        self.r_mappings = self.RemoteVpcMappings(self.params)
 
         for eni_index in range(1, ENI_COUNT + 1):
             PAL = PAL + IP_STEP1
@@ -110,7 +110,7 @@ class VpcMappings(ConfBase):
                 {
                     "MAPPINGS:VPC:%d" % eni_index: {
                         "vpc-id": "vpc-%d" % eni_index,
-                        "mappings": [
+                        self.r_mappings.dictName(): [
                             {
                                 "routing-type": "vpc-direct",
                                 "overlay-ip-address": "%s" % local_ip,
@@ -167,13 +167,22 @@ class VpcMappings(ConfBase):
             r_vpc_mapping = {
                     "MAPPINGS:VPC:%d" % r_vpc: {
                         "vpc-id": "vpc-%d" % r_vpc,
-                        "mappings": (x for x in r_mappings.items(eni_index))
+                        self.r_mappings.dictName(): (x for x in self.r_mappings.items(eni_index))
                     }
                 }
 
             self.numYields+=1
             yield r_vpc_mapping
-        log_memory('    %s: yielded %d items' % (self.dictName(), self.numYields))
+        log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
+        log_msg('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()), self.args.detailed_stats)
+        log_msg('    %s: yielded %d items' % (self.r_mappings.dictName(), self.r_mappings.itemsGenerated()), self.args.detailed_stats)
+
+    def __str__(self):
+            subgens = [self.r_mappings]
+            """String repr of all items in generator"""
+            return '%s: %d total items:\n' % (self.dictName(), sum(c.itemsGenerated() for c in subgens)) + \
+                    '    ' +\
+                    '\n    '.join(c.__str__() for c in subgens)
 
 if __name__ == "__main__":
     conf=VpcMappings()
