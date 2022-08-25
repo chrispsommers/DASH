@@ -10,12 +10,14 @@ ipp = ipaddress.ip_address
 macM = macaddress.MAC
 class ConfBase(ABC):
 
-    def __init__(self, name='base', params={}):
-        self.dictname = name
+    def __init__(self, name='base', params={}, args=None):
+        self._dictname = name
         self.dflt_params = deepcopy(dflt_params)
         self.cooked_params = {}
         self.mergeParams(params)
         self.numYields = 0
+        if args is not None:
+            self.args = args
 
     def mergeParams(self, params):
         # Merge provided params into/onto defaults
@@ -26,7 +28,7 @@ class ConfBase(ABC):
         # https://stackoverflow.com/questions/1305532/how-to-convert-a-nested-python-dict-to-object
         self.cookParams()
         self.params = DefaultMunch.fromDict(self.params_dict)
-        # print ('%s: self.params=' % self.dictname, self.params)
+        # print ('%s: self.params=' % self._dictname, self.params)
         self.cooked_params = DefaultMunch.fromDict(self.cooked_params_dict)
         # print ("cooked_params = ", self.cooked_params)
 
@@ -66,10 +68,10 @@ class ConfBase(ABC):
         return self.num_yields
 
     def dictName(self):
-        return self.dictname
+        return self._dictname
 
     def toDict(self):
-        return {self.dictname: list(self.items())}
+        return ({self._dictname: self.items()})
 
     def getParams(self):
         return self.params_dict

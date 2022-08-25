@@ -11,7 +11,7 @@ class VpcMappings(ConfBase):
     
     def items(self):
         self.numYields = 0
-        print('  Generating %s...' % self.dictname, file=sys.stderr)
+        print('  Generating %s...' % self.dictName(), file=sys.stderr)
         p=self.params
         cp=self.cooked_params
         PAL = cp.PAL
@@ -103,7 +103,7 @@ class VpcMappings(ConfBase):
 
             self.numYields+=1
             yield r_vpc_mapping
-        log_memory('    %s: yielded %d items' % (self.dictname, self.numYields))
+        log_memory('    %s: yielded %d items' % (self.dictName(), self.numYields))
 
 if __name__ == "__main__":
     conf=VpcMappings()

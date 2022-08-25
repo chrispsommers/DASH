@@ -106,10 +106,7 @@ def writeDictFileIter(config, format, filename='<stdout>'):
 
     log_memory("writeDictFileIter exit")
 
-def commonArgParser():
-    parser = argparse.ArgumentParser(description='Generate DASH Configs',
-                formatter_class=argparse.RawTextHelpFormatter,
-                epilog = textwrap.dedent('''
+common_arg_epilog='''
 Usage:
 =========
 ./generate.d.py                - generate output to stdout using uber-generator
@@ -129,13 +126,17 @@ Can use defaults; override from file; override again from cmdline (all 3 sources
 ./generate.d.py -p PARAM_FILE -P PARAMS     - override with params from file and cmdline; generate output
 
 Examples:
+=========
 ./generate.d.py -d -p params_small.py -P "{'ENI_COUNT': 16}"  - use params_small.py but override ENI_COUNT; display params
 ./generate.d.py -p params_hero.py -o tmp.json                 - generate full "hero test" scale config as json file
 dashgen/vpcmappingtypes.py -m -M "Kewl Config!"               - generate dict of vpcmappingtypes, include meta with message            
+            '''
 
+def commonArgParser():
 
-
-            '''))
+    parser = argparse.ArgumentParser(description='Generate DASH Configs',
+                formatter_class=argparse.RawTextHelpFormatter,
+                epilog = textwrap.dedent(common_arg_epilog))
 
     # parser.add_argument('-f', '--format', choices=['json', 'yaml'], default='json',
     parser.add_argument('-f', '--format', choices=['json'], default='json',
@@ -165,8 +166,7 @@ dashgen/vpcmappingtypes.py -m -M "Kewl Config!"               - generate dict of
 
     return parser
 
-def common_parse_args(self):
-    parser = commonArgParser()
+def common_parse_args(self, parser=commonArgParser()):
     self.args = parser.parse_args()
 
     # Prams from file override defaults; params from cmd-line override all

@@ -13,7 +13,7 @@ class RouteTables(ConfBase):
     
     def items(self):
         self.numYields = 0
-        print('  Generating %s...' % self.dictname, file=sys.stderr)
+        print('  Generating %s...' % self.dictName(), file=sys.stderr)
         p=self.params
         cp=self.cooked_params
         # optimizations:
@@ -85,7 +85,7 @@ class RouteTables(ConfBase):
                         "routes": routes
                     }
                 }
-        log_memory('    %s: yielded %d items' % (self.dictname, self.numYields))
+        log_memory('    %s: yielded %d items' % (self.dictName(), self.numYields))
 
 if __name__ == "__main__":
     conf=RouteTables()
