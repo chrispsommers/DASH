@@ -8,7 +8,7 @@ class Enis(ConfBase):
     def __init__(self, params={}):
         super().__init__('enis', params)
  
-    class acls_v4_in(ConfBase):
+    class AclsV4In(ConfBase):
         def __init__(self, params={}, args=None):
             super().__init__('acls-v4-in', params, args)
             if hasattr(self, 'args'):
@@ -37,7 +37,7 @@ class Enis(ConfBase):
                 else:
                     continue
 
-    class acls_v4_out(ConfBase):
+    class AclsV4Out(ConfBase):
         def __init__(self, params={}, args=None):
             super().__init__('acls-v4-out', params, args)
             if hasattr(self, 'args'):
@@ -75,8 +75,8 @@ class Enis(ConfBase):
         print('  Generating %s...' % self.dictName(), file=sys.stderr)
         p=self.params
         cp=self.cooked_params
-        acl_in = self.acls_v4_in(self.params)
-        acl_out = self.acls_v4_out(self.params)
+        acl_in = self.AclsV4In(self.params)
+        acl_out = self.AclsV4Out(self.params)
 
         for eni_index in range(1, p.ENI_COUNT+1):
             local_mac = str(macaddress.MAC(int(cp.MAC_L_START)+(eni_index - 1)*int(macaddress.MAC(p.ENI_MAC_STEP)))).replace('-', ':')
@@ -147,12 +147,12 @@ python3 dashgen/enis.py -aA -i 3                              - generate acl-in 
     suppress_top_level = False
 
     if conf.args.acls_in:
-        acl_in=conf.acls_v4_in(args=conf.args)
+        acl_in=conf.AclsV4In(args=conf.args)
         common_output(acl_in)
         suppress_top_level = True
 
     if conf.args.acls_out:
-        acl_out=conf.acls_v4_out(args=conf.args)
+        acl_out=conf.AclsV4Out(args=conf.args)
         common_output(acl_out)
         suppress_top_level = True
         

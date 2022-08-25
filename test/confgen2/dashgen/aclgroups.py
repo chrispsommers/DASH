@@ -8,7 +8,7 @@ class AclGroups(ConfBase):
 
     def __init__(self, params={}):
         super().__init__('acl-groups', params)
-    class acl_rules(ConfBase):
+    class AclRulesIpv4(ConfBase):
         def __init__(self, params={}, args=None):
             super().__init__('rules', params, args)
             if hasattr(self, 'args'):
@@ -117,7 +117,7 @@ class AclGroups(ConfBase):
         ACL_RULES_NSG=p.ACL_RULES_NSG
         IP_PER_ACL_RULE=p.IP_PER_ACL_RULE
         
-        rules = self.acl_rules(self.params)
+        rules = self.AclRulesIpv4(self.params)
 
         for eni_index in range(1, p.ENI_COUNT + 1):
             local_ip = IP_L_START + (eni_index - 1) * IP_STEP4
