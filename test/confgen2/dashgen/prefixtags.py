@@ -10,7 +10,7 @@ class PrefixTags(ConfBase):
 
     def items(self):
         self.numYields = 0
-        print('  Generating %s...' % self.dictName(), self.args.verbose)
+        self.log_verbose('  Generating %s...' % self.dictName())
         p=self.params
         cp=self.cooked_params
         for eni_index in range(1, p.ENI_COUNT+1):
@@ -40,8 +40,8 @@ class PrefixTags(ConfBase):
                         ]
                     },
                 }
-        log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
-        print('    %s: yielded %d items' % (self.dictName(), self.numYields), self.args.detailed_stats)
+        self.log_mem('    Finished generating %s' % self.dictName())
+        self.log_details('    %s: yielded %d items' % (self.dictName(), self.numYields))
             
 if __name__ == "__main__":
     conf=PrefixTags()

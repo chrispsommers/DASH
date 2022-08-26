@@ -80,6 +80,4 @@ if __name__ == "__main__":
     log_memory("Start", conf.args.detailed_stats)
     conf.generate()
     common_output(conf)
-    if conf.args.summary_stats:
-        print (conf.__str__(), file=sys.stderr)
     log_memory("Done", conf.args.detailed_stats)

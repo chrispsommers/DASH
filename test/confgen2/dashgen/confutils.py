@@ -132,8 +132,16 @@ Can use defaults; override from file; override again from cmdline (all 3 sources
 ./generate.d.py -d -p PARAM_FILE -P PARAMS  - override with params from file and cmdline; display only
 ./generate.d.py -p PARAM_FILE -P PARAMS     - override with params from file and cmdline; generate output
 
-Examples:
-=========
+Diagnostic Options:
+===================
+./generate.d.py -v              - display verbose progress messages
+./generate.d.py -S              - display verbose stats (#items, memory usage) throughout
+./generate.d.py -ns             - suppress output, just display summary geneator stats at end
+./generate.d.py -nsSv           - suppress output, display all diagnostics and summary stats at end
+
+
+Misc. Examples:
+===============
 ./generate.d.py -d -p params_small.py -P "{'ENI_COUNT': 16}"  - use params_small.py but override ENI_COUNT; display params
 ./generate.d.py -p params_hero.py -o tmp.json                 - generate full "hero test" scale config as json file
 dashgen/vpcmappingtypes.py -m -M "Kewl Config!"               - generate dict of vpcmappingtypes, include meta with message            
@@ -153,14 +161,17 @@ def commonArgParser():
             help='Emit dictionary (with inner lists), or list items only')
 
     parser.add_argument('-d', '--dump-params', action='store_true',
-            help='Just dump paramters (defaults with user-defined merged in')
+            help='Just dump parameters (defaults with user-defined merged in')
 
     parser.add_argument('-m', '--meta', action='store_true',
             help='Include metadata in output (only if "-c dict" used)')
 
     parser.add_argument('-M', '--msg', default='', metavar='"MSG"',
             help='Put MSG in metadata (only if "-m" used)')
-   
+
+    parser.add_argument('-n', '--no-output', action='store_true',
+            help="Write output to /dev/null (overrides -o); still print optional diagnostics")
+
     parser.add_argument('-P', '--set-params', metavar='"{PARAMS}"',
             help='use parameter dict from cmdline, partial is OK; overrides defaults & from file')
 
@@ -170,7 +181,6 @@ def commonArgParser():
     parser.add_argument(
             '-o', '--output', default='<stdout>', metavar='OFILE',
             help="Output file (default: standard output)")
-
 
     parser.add_argument(
             '-s', '--summary-stats', action='store_true',
@@ -203,6 +213,10 @@ def common_parse_args(self, parser=commonArgParser()):
         exit()
 
 def common_output(self):
+    if self.args.no_output:
+        # still need to "write" to somethign to run generators
+        self.args.output = '/dev/null'
+
     if self.args.content == 'dict':
         d=self.toDict()
         if (self.args.meta):
@@ -216,11 +230,12 @@ def common_output(self):
     else:
         raise NotSupportedError("Unknown content specifier: '%s'" % self.args.content)
 
+    if self.args.summary_stats:
+        print (self.__str__(), file=sys.stderr)
+
 def common_main(self):
     common_parse_args(self)
 
     log_memory("Start", self.args.detailed_stats)
     common_output(self)
-    if self.args.summary_stats:
-        print (self.__str__(), file=sys.stderr)
     log_memory("Done", self.args.detailed_stats)

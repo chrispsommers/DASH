@@ -84,6 +84,7 @@ class AclGroups(ConfBase):
                 yield deepcopy(rule_d)
 
             # add as last rule in last table from ingress and egress an allow rule for all the ip's from egress and ingress
+            # TODO parameterize num tables
             if ((table_index - 1) % 3) == 2:
                 # rule_id_a = table_id * 10 *ACL_RULES_NSG + ip_index
                 all_ipsA = IP_R_START + (eni_index - 1) * IP_STEP4 + (table_index % 6) * 4 * IP_STEP3
@@ -108,19 +109,12 @@ class AclGroups(ConfBase):
                 yield deepcopy(rule_allow_all)
     
     def items(self):
-        log_msg('  Generating %s...' % self.dictName(), self.args.verbose)
+        self.log_verbose('  Generating %s...' % self.dictName())
         p=self.params
         cp=self.cooked_params
-        IP_STEP1=cp.IP_STEP1
-        IP_STEP2=cp.IP_STEP2
-        IP_STEP3=cp.IP_STEP3
         IP_STEP4=cp.IP_STEP4
-        IP_STEPE=cp.IP_STEPE
-        IP_R_START=cp.IP_R_START
         IP_L_START=cp.IP_L_START
         ACL_TABLE_COUNT=p.ACL_TABLE_COUNT
-        ACL_RULES_NSG=p.ACL_RULES_NSG
-        IP_PER_ACL_RULE=p.IP_PER_ACL_RULE
 
         for eni_index in range(1, p.ENI_COUNT + 1):
             local_ip = IP_L_START + (eni_index - 1) * IP_STEP4
@@ -128,73 +122,6 @@ class AclGroups(ConfBase):
 
             for table_index in range(1, (ACL_TABLE_COUNT*2+1)):
                 table_id = eni_index * 1000 + table_index
-
-                # rules = []
-                # rappend = rules.append
-                # for ip_index in range(1, (ACL_RULES_NSG+1), 2):
-                #     # rule_id_a = table_id * 10 * ACL_RULES_NSG + ip_index
-                #     remote_ip_a = IP_R_START + (eni_index - 1) * IP_STEP4 + (
-                #         table_index - 1) * 4 * IP_STEP3 + (ip_index - 1) * IP_STEP2
-
-                #     ip_list_a = [str(remote_ip_a + expanded_index * IP_STEPE)+"/32" for expanded_index in range(0, IP_PER_ACL_RULE)]
-                #     ip_list_a.append(l_ip_ac)
-
-                #     rule_a = {
-                #         "priority": ip_index,
-                #         "action": "allow",
-                #         "terminating": False,
-                #         "src_addrs": ip_list_a[:],
-                #         "dst_addrs":  ip_list_a[:],
-                #     }
-                #     rappend(rule_a)
-                #     # rule_id_d = rule_id_a + 1
-                #     remote_ip_d = remote_ip_a + IP_STEP1
-
-                #     ip_list_d = [str(remote_ip_d + expanded_index * IP_STEPE)+"/32" for expanded_index in range(0, IP_PER_ACL_RULE)]
-                #     ip_list_d.append(l_ip_ac)
-
-                #     rule_d = {
-                #         "priority": ip_index+1,
-                #         "action": "deny",
-                #         "terminating": True,
-                #         "src_addrs": ip_list_d[:],
-                #         "dst_addrs":  ip_list_d[:],
-                #     }
-                #     rappend(rule_d)
-
-                # # add as last rule in last table from ingress and egress an allow rule for all the ip's from egress and ingress
-                # if ((table_index - 1) % 3) == 2:
-                #     rule_id_a = table_id * 10 *ACL_RULES_NSG + ip_index
-                #     all_ipsA = IP_R_START + (eni_index - 1) * IP_STEP4 + (table_index % 6) * 4 * IP_STEP3
-                #     all_ipsB = all_ipsA + 1 * 4 * IP_STEP3
-                #     all_ipsC = all_ipsA + 2 * 4 * IP_STEP3
-
-                #     ip_list_all = [
-                #         l_ip_ac,
-                #         str(all_ipsA)+"/14",
-                #         str(all_ipsB)+"/14",
-                #         str(all_ipsC)+"/14",
-                #     ]
-
-                #     rule_allow_all = {
-                #         "priority": ip_index+2,
-                #         "action": "allow",
-                #         "terminating": "true",
-                #         "src_addrs": ip_list_all[:],
-                #         "dst_addrs":  ip_list_all[:],
-                #     }
-                #     rappend(rule_allow_all)
-
-                # acl_group = deepcopy(
-                #     {
-                #         "ACL-GROUP:ENI:%d:TABLE:%d" % (eni_index, table_id): {
-                #             "acl-group-id": "acl-group-%d" % table_id,
-                #             "ip_version": "IPv4",
-                #             "rules": rules
-                            
-                #         }
-                #     }
-                # )
                 acl_group = {
                         "ACL-GROUP:ENI:%d:TABLE:%d" % (eni_index, table_id): {
                             "acl-group-id": "acl-group-%d" % table_id,
@@ -206,12 +133,52 @@ class AclGroups(ConfBase):
                 
                 self.numYields+=1
                 yield acl_group
-        log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
-        log_msg('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()), self.args.detailed_stats)
-        log_msg('    %s: yielded %d items' % (self.rules.dictName(), self.rules.itemsGenerated()), self.args.detailed_stats)
+        self.log_mem('    Finished generating %s' % self.dictName())
+        self.log_details('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()))
+        self.log_details('    %s: yielded %d items' % (self.rules.dictName(), self.rules.itemsGenerated()))
+
+
 
 if __name__ == "__main__":
     conf=AclGroups()
+    parser=commonArgParser()
+
+    parser.add_argument('-a', '--acls-ipv4', action='store_true',
+            help='Generate IPv4 ACL group tables, suppress top-level container')
+
+    parser.add_argument('-e', '--eni-index', type=int, default=1,
+            help='Specify single ENI index for ACL tables')
+
+    parser.add_argument('-t', '--table-index', type=int, default=1,
+            help='Specify single table index for ACL tables')
+
+    parser.epilog = textwrap.dedent(common_arg_epilog + '''
+
+ACL Group-specific Examples:
+============================
+NOTE: Effective ACL group = (eni_index * 1000 + table_index).
+
+The -a option allows you to generate rules only (no GROUP container) for one ENI/ACL group.
+Use repeatedly if you need more instances, or write a custom program for other options.
+Omit -a to generate entire ACL groups config per input PARAMs.
+The output from -a option will NOT have an enclosing container with ACL group but the IP addresses,
+etc. will correspond to the ACL group rules obtained using the normal "full output" (no -a option).
+
+python3 dashgen/enis.py [-p PARAM_FILE] [-P PARAMS]       - generate ACL entries and group container using PARAMs from global options
+python3 dashgen/enis.py -a                                - generate ACL rules only for ENI=1 Group=1001
+python3 dashgen/enis.py -a -e 3 -t 2                      - generate ACL rules only for ENI=3 Group=3002
+    ''')
+
+    common_parse_args(conf, parser)         
     log_memory("Start", conf.args.detailed_stats)
-    common_main(conf)
+    suppress_top_level = False
+
+    if conf.args.acls_ipv4:
+        acl_in=conf.AclRulesIpv4(args=conf.args)
+        common_output(acl_in)
+        suppress_top_level = True
+
+    if not suppress_top_level:
+        common_output(conf)
+
     log_memory("Done", conf.args.detailed_stats)

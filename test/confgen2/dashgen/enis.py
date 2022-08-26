@@ -84,28 +84,6 @@ class Enis(ConfBase):
         for eni_index in range(1, p.ENI_COUNT+1):
             local_mac = str(macaddress.MAC(int(cp.MAC_L_START)+(eni_index - 1)*int(macaddress.MAC(p.ENI_MAC_STEP)))).replace('-', ':')
 
-            # acls_v4_in = []
-            # acls_v4_out = []
-
-            # for table_index in range(1, (p.ACL_TABLE_COUNT*2+1)):
-            #     table_id = eni_index * 1000 + table_index
-
-            #     stage = (table_index - 1) % 3 + 1
-            #     if table_index < 4:
-            #         acls_v4_in.append(
-            #             {
-            #                 "acl-group-id": "acl-group-%d" % table_id,
-            #                 "stage": stage
-            #             }
-            #         )
-            #     else:
-            #         acls_v4_out.append(
-            #             {
-            #                 "acl-group-id": "acl-group-%d" % table_id,
-            #                 "stage": stage
-            #             }
-            #         )
-
             self.numYields+=1
             yield \
                 {
@@ -115,37 +93,40 @@ class Enis(ConfBase):
                         'vpcs': [
                             eni_index
                         ],
-                        # "acls-v4-in": acls_v4_in,
-                        # "acls-v4-out": acls_v4_out,
                         self.acl_in.dictName(): (x for x in self.acl_in.items(eni_index)),
                         self.acl_out.dictName(): (x for x in self.acl_out.items(eni_index)),
                         "route-table-v4": "route-table-%d" % eni_index
                     },
                 }
-        log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
-        log_msg('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()), self.args.detailed_stats)
-        log_msg('    %s: yielded %d items' % (self.acl_in.dictName(), self.acl_in.itemsGenerated()), self.args.detailed_stats)
-        log_msg('    %s: yielded %d items' % (self.acl_out.dictName(), self.acl_out.itemsGenerated()), self.args.detailed_stats)
+        self.log_mem('    Finished generating %s' % self.dictName())
+        self.log_details('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()))
+        self.log_details('    %s: yielded %d items' % (self.acl_in.dictName(), self.acl_in.itemsGenerated()))
+        self.log_details('    %s: yielded %d items' % (self.acl_out.dictName(), self.acl_out.itemsGenerated()))
 
 if __name__ == "__main__":
     conf=Enis()
     parser=commonArgParser()
 
     parser.add_argument('-a', '--acls-in', action='store_true',
-            help='Generate ACL IN tables, supress top-level container')
+            help='Generate ACL IN tables (single ENI), suppress top-level container')
 
     parser.add_argument('-A', '--acls-out', action='store_true',
-            help='Generate ACL OUT tables, suppress top-level container')
+            help='Generate ACL OUT tables (single ENI), suppress top-level container')
 
-    parser.add_argument('-i', '--eni-index', type=int, default=1,
-            help='Generate ACL OUT tables, suppress top-level container')
+    parser.add_argument('-e', '--eni-index', type=int, default=1,
+            help='Specify single ENI index for ACL tables')
 
     parser.epilog = textwrap.dedent(common_arg_epilog + '''
 
 ENI-specific Examples:
 ======================
-python3 dashgen/enis.py -a -i 3                               - generate acl-in entries only, for ENI index 3
-python3 dashgen/enis.py -aA -i 3                              - generate acl-in and acl-out entries, for ENI index 3
+These options allow you to run a specific sub-generator with narrow parameters for ENI.
+Use -a, -A to generate ACL in and/or out tables for a single ENI.
+Omit -a, -A to generate entire ACL group config per input PARAMs.
+Use repeatedly if you need more ENIs, or write a custom program for other options.
+
+python3 dashgen/enis.py -a -e 3                               - generate acl-in entries only, for ENI index 3
+python3 dashgen/enis.py -aA -e 3                              - generate acl-in and acl-out entries, for ENI index 3
     ''')
 
     common_parse_args(conf, parser)         

@@ -8,6 +8,8 @@ import ipaddress
 import macaddress
 ipp = ipaddress.ip_address
 macM = macaddress.MAC
+from confutils import *
+
 class ConfBase(ABC):
 
     def __init__(self, name='base', params={}, args=None):
@@ -98,8 +100,6 @@ class ConfBase(ABC):
                     'params': self.getParams()
                 }
             }
-    # def __str__(self):
-    #     return '%s: %d items' % (self.dictName(), self.itemsGenerated())
 
     def __str__(self):
             """String repr of all items in generator"""
@@ -115,3 +115,13 @@ class ConfBase(ABC):
 
     def pretty(self):
         pprint.pprint(self.toDict())
+
+    def log_verbose(self, msg=''):
+        log_msg(msg, self.args.verbose)
+
+    def log_details(self, msg=''):
+        log_msg(msg, self.args.detailed_stats)
+
+    def log_mem(self, msg=''):
+        log_memory(msg,  self.args.detailed_stats)
+
