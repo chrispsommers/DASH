@@ -18,6 +18,8 @@ class ConfBase(ABC):
         self.numYields = 0
         if args is not None:
             self.args = args
+        
+        self.subgens = []
 
     def mergeParams(self, params):
         # Merge provided params into/onto defaults
@@ -67,9 +69,17 @@ class ConfBase(ABC):
         """ Last count of # yields, accumulates each yield until cleared"""
         return self.numYields
 
-    def clearCounts(self):
+    def subItemsGenerated(self):
+        """ Sum of subgenerator items"""
+        return sum(c.itemsGenerated()+ c.subItemsGenerated() for c in self.subgens)
+
+    def clearCount(self):
         """ Reset count of # yields"""
         self.numYields=0
+
+    def count(self):
+        """ Increment of # yields"""
+        self.numYields+=1
 
     def dictName(self):
         return self._dictname
@@ -88,8 +98,20 @@ class ConfBase(ABC):
                     'params': self.getParams()
                 }
             }
+    # def __str__(self):
+    #     return '%s: %d items' % (self.dictName(), self.itemsGenerated())
+
     def __str__(self):
-        return '%s: %d items' % (self.dictName(), self.itemsGenerated())
+            """String repr of all items in generator"""
+            if len(self.subgens) > 0:
+                subtotal = sum(c.itemsGenerated() for c in self.subgens)
+
+                return '%s: %d items, %d sub-items:\n' % \
+                            (self.dictName(), self.itemsGenerated(), self.subItemsGenerated()) + \
+                        '    ' + \
+                        '\n    '.join(c.__str__() for c in self.subgens)
+            else:
+               return '%s: %d items' % (self.dictName(), self.itemsGenerated())
 
     def pretty(self):
         pprint.pprint(self.toDict())

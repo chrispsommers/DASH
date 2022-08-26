@@ -7,7 +7,10 @@ class Enis(ConfBase):
 
     def __init__(self, params={}, args=None):
         super().__init__('enis', params, args)
- 
+        self.acl_in = self.AclsV4In(self.params)
+        self.acl_out = self.AclsV4Out(self.params)
+        self.subgens = [self.acl_in, self.acl_out]
+
     class AclsV4In(ConfBase):
         def __init__(self, params={}, args=None):
             super().__init__('acls-v4-in', params, args)
@@ -77,8 +80,6 @@ class Enis(ConfBase):
         log_msg('  Generating %s...' % self.dictName(), self.args.verbose)
         p=self.params
         cp=self.cooked_params
-        self.acl_in = self.AclsV4In(self.params)
-        self.acl_out = self.AclsV4Out(self.params)
 
         for eni_index in range(1, p.ENI_COUNT+1):
             local_mac = str(macaddress.MAC(int(cp.MAC_L_START)+(eni_index - 1)*int(macaddress.MAC(p.ENI_MAC_STEP)))).replace('-', ':')
@@ -125,13 +126,6 @@ class Enis(ConfBase):
         log_msg('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()), self.args.detailed_stats)
         log_msg('    %s: yielded %d items' % (self.acl_in.dictName(), self.acl_in.itemsGenerated()), self.args.detailed_stats)
         log_msg('    %s: yielded %d items' % (self.acl_out.dictName(), self.acl_out.itemsGenerated()), self.args.detailed_stats)
-
-    def __str__(self):
-            subgens = [self.acl_in,self.acl_out]
-            """String repr of all items in generator"""
-            return '%s: %d total items:\n' % (self.dictName(), sum(c.itemsGenerated() for c in subgens)) + \
-                    '    ' +\
-                    '\n    '.join(c.__str__() for c in subgens)
 
 if __name__ == "__main__":
     conf=Enis()

@@ -8,6 +8,8 @@ class VpcMappings(ConfBase):
 
     def __init__(self, params={}, args=None):
         super().__init__('vpc-mappings', params, args)
+        self.r_mappings = self.RemoteVpcMappings(self.params)
+        self.subgens = [self.r_mappings]
     class RemoteVpcMappings(ConfBase):
         def __init__(self, params={}, args=None):
             super().__init__('mappings', params, args)
@@ -91,9 +93,6 @@ class VpcMappings(ConfBase):
         # IP_MAPPED_PER_ACL_RULE=p.IP_MAPPED_PER_ACL_RULE
         ENI_COUNT=p.ENI_COUNT
 
-        
-        self.r_mappings = self.RemoteVpcMappings(self.params)
-
         for eni_index in range(1, ENI_COUNT + 1):
             PAL = PAL + IP_STEP1
             # PAR = PAR + IP_STEP1
@@ -176,13 +175,6 @@ class VpcMappings(ConfBase):
         log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
         log_msg('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()), self.args.detailed_stats)
         log_msg('    %s: yielded %d items' % (self.r_mappings.dictName(), self.r_mappings.itemsGenerated()), self.args.detailed_stats)
-
-    def __str__(self):
-            subgens = [self.r_mappings]
-            """String repr of all items in generator"""
-            return '%s: %d total items:\n' % (self.dictName(), sum(c.itemsGenerated() for c in subgens)) + \
-                    '    ' +\
-                    '\n    '.join(c.__str__() for c in subgens)
 
 if __name__ == "__main__":
     conf=VpcMappings()

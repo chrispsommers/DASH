@@ -8,6 +8,8 @@ class AclGroups(ConfBase):
 
     def __init__(self, params={}, args=None):
         super().__init__('acl-groups', params, args)
+        self.rules = self.AclRulesIpv4(self.params)
+        self.subgens = [self.rules]
     class AclRulesIpv4(ConfBase):
         def __init__(self, params={}, args=None):
             super().__init__('rules', params, args)
@@ -17,6 +19,7 @@ class AclGroups(ConfBase):
             else:
                 self.eni_index = 1
                 self.table_index = 1
+        
 
         def items(self, eni_ndx=None, table_ndx=None):
             # allow using param value from command-line, or override from called
@@ -118,8 +121,6 @@ class AclGroups(ConfBase):
         ACL_TABLE_COUNT=p.ACL_TABLE_COUNT
         ACL_RULES_NSG=p.ACL_RULES_NSG
         IP_PER_ACL_RULE=p.IP_PER_ACL_RULE
-        
-        self.rules = self.AclRulesIpv4(self.params)
 
         for eni_index in range(1, p.ENI_COUNT + 1):
             local_ip = IP_L_START + (eni_index - 1) * IP_STEP4
@@ -208,13 +209,6 @@ class AclGroups(ConfBase):
         log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
         log_msg('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()), self.args.detailed_stats)
         log_msg('    %s: yielded %d items' % (self.rules.dictName(), self.rules.itemsGenerated()), self.args.detailed_stats)
-
-    def __str__(self):
-            subgens = [self.rules]
-            """String repr of all items in generator"""
-            return '%s: %d total items:\n' % (self.dictName(), sum(c.itemsGenerated() for c in subgens)) + \
-                    '    ' +\
-                    '\n    '.join(c.__str__() for c in subgens)
 
 if __name__ == "__main__":
     conf=AclGroups()

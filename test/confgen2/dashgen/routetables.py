@@ -10,6 +10,8 @@ class RouteTables(ConfBase):
 
     def __init__(self, params={}, args=None):
         super().__init__('route-tables', params, args)
+        self.routes = self.Routes(self.params)
+        self.subgens = [self.routes]
 
     class IpPrefixes(ConfBase):
         def __init__(self, params={}, args=None):
@@ -63,6 +65,8 @@ class RouteTables(ConfBase):
     class Routes(ConfBase):
         def __init__(self, params={}, args=None):
             super().__init__('routes', params, args)
+            self.ip_prefixes = RouteTables.IpPrefixes(self.params)
+            self.subgens = [self.ip_prefixes]
             if hasattr(self, 'args'):
                 self.eni_index = self.args.eni_index
             else:
@@ -96,8 +100,6 @@ class RouteTables(ConfBase):
                     }
                 }
 
-            self.ip_prefixes = RouteTables.IpPrefixes(self.params)
-
             self.numYields+=1
             yield \
                 {
@@ -129,7 +131,6 @@ class RouteTables(ConfBase):
 
         # nr_of_routes_prefixes = int(math.log(p.IP_ROUTE_DIVIDER_PER_ACL_RULE, 2))
         
-        self.routes = self.Routes(self.params)
         for eni_index in range(1, p.ENI_COUNT+1):
             # routes = []
             # ip_prefixes = []
@@ -189,13 +190,6 @@ class RouteTables(ConfBase):
         log_msg('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()), self.args.detailed_stats)
         log_msg('    %s: yielded %d items' % (self.routes.dictName(), self.routes.itemsGenerated()), self.args.detailed_stats)
         log_msg('    %s: yielded %d items' % (self.routes.ip_prefixes.dictName(), self.routes.ip_prefixes.itemsGenerated()), self.args.detailed_stats)
-
-    def __str__(self):
-            subgens = [self.routes,self.routes.ip_prefixes]
-            """String repr of all items in generator"""
-            return '%s: %d total items:\n' % (self.dictName(), sum(c.itemsGenerated() for c in subgens)) + \
-                    '    ' +\
-                    '\n    '.join(c.__str__() for c in subgens)
 
 if __name__ == "__main__":
     conf=RouteTables()
