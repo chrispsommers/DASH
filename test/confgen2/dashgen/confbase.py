@@ -101,6 +101,12 @@ class ConfBase(ABC):
                 }
             }
 
+    def renderItem(self, item):
+        """Render into final output form.
+        Optionally transform a python dict or list into a different one.
+        """
+        return item
+        
     def __str__(self):
             """String repr of all items in generator"""
             if len(self.subgens) > 0:

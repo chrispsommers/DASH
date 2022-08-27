@@ -45,6 +45,4 @@ class PrefixTags(ConfBase):
             
 if __name__ == "__main__":
     conf=PrefixTags()
-    log_memory("Start", conf.args.detailed_stats)
     common_main(conf)
-    log_memory("Done", conf.args.detailed_stats)

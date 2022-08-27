@@ -20,7 +20,6 @@ class AclGroups(ConfBase):
                 self.eni_index = 1
                 self.table_index = 1
         
-
         def items(self, eni_ndx=None, table_ndx=None):
             # allow using param value from command-line, or override from called
             if eni_ndx:
@@ -147,10 +146,10 @@ if __name__ == "__main__":
             help='Generate IPv4 ACL group tables, suppress top-level container')
 
     parser.add_argument('-e', '--eni-index', type=int, default=1,
-            help='Specify single ENI index for ACL tables')
+            help='Specify single ENI index (use with -a option only)')
 
     parser.add_argument('-t', '--table-index', type=int, default=1,
-            help='Specify single table index for ACL tables')
+            help='Specify single table index (use with -a option only)')
 
     parser.epilog = textwrap.dedent(common_arg_epilog + '''
 
@@ -164,13 +163,13 @@ Omit -a to generate entire ACL groups config per input PARAMs.
 The output from -a option will NOT have an enclosing container with ACL group but the IP addresses,
 etc. will correspond to the ACL group rules obtained using the normal "full output" (no -a option).
 
-python3 dashgen/enis.py [-p PARAM_FILE] [-P PARAMS]       - generate ACL entries and group container using PARAMs from global options
-python3 dashgen/enis.py -a                                - generate ACL rules only for ENI=1 Group=1001
-python3 dashgen/enis.py -a -e 3 -t 2                      - generate ACL rules only for ENI=3 Group=3002
+python3 dashgen/aclgroups.py [-p PARAM_FILE] [-P PARAMS]       - generate ACL entries and group container using PARAMs from global options
+python3 dashgen/aclgroups.py -a                                - generate ACL rules only for ENI=1 Group=1001
+python3 dashgen/aclgroups.py -a -e 3 -t 2                      - generate ACL rules only for ENI=3 Group=3002
     ''')
 
     common_parse_args(conf, parser)         
-    log_memory("Start", conf.args.detailed_stats)
+    conf.log_mem("Start")
     suppress_top_level = False
 
     if conf.args.acls_ipv4:
@@ -181,4 +180,4 @@ python3 dashgen/enis.py -a -e 3 -t 2                      - generate ACL rules o
     if not suppress_top_level:
         common_output(conf)
 
-    log_memory("Done", conf.args.detailed_stats)
+    conf.log_mem("Done")

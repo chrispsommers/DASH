@@ -236,6 +236,6 @@ def common_output(self):
 def common_main(self):
     common_parse_args(self)
 
-    log_memory("Start", self.args.detailed_stats)
+    self.log_memory("Start")
     common_output(self)
-    log_memory("Done", self.args.detailed_stats)
+    self.log_memory("Done")

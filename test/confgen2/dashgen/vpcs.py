@@ -10,7 +10,7 @@ class Vpcs(ConfBase):
         super().__init__('vpc', params, args)
     
     def items(self):
-        log_msg('  Generating %s...' % self.dictName(), self.args.verbose)
+        self.log_verbose('  Generating %s...' % self.dictName())
         p=self.params
         cp=self.cooked_params
         IP_L_START=cp.IP_L_START
@@ -49,8 +49,8 @@ class Vpcs(ConfBase):
                         ]
                     },
                 }
-        log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
-        log_msg('    %s: yielded %d items' % (self.dictName(), self.numYields), self.args.detailed_stats)
+        self.log_mem('    Finished generating %s' % self.dictName())
+        self.log_details('    %s: yielded %d items' % (self.dictName(), self.numYields))
 
 if __name__ == "__main__":
     conf=Vpcs()

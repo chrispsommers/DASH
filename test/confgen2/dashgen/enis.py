@@ -32,14 +32,15 @@ class Enis(ConfBase):
                 stage = (table_index - 1) % 3 + 1
                 if table_index < 4:
                     self.numYields+=1
-                    yield \
+                    yield self.renderItem( \
                         {
                             "acl-group-id": "acl-group-%d" % table_id,
                             "stage": stage
-                        }
+                        })
                     
                 else:
                     continue
+
 
     class AclsV4Out(ConfBase):
         def __init__(self, params={}, args=None):
@@ -68,11 +69,11 @@ class Enis(ConfBase):
                     
                 else:
                     self.numYields+=1
-                    yield \
+                    yield self.renderItem( \
                         {
                             "acl-group-id": "acl-group-%d" % table_id,
                             "stage": stage
-                        }
+                        })
 
 
     def items(self):
@@ -85,7 +86,7 @@ class Enis(ConfBase):
             local_mac = str(macaddress.MAC(int(cp.MAC_L_START)+(eni_index - 1)*int(macaddress.MAC(p.ENI_MAC_STEP)))).replace('-', ':')
 
             self.numYields+=1
-            yield \
+            yield self.renderItem( \
                 {
                     'ENI:%d' % eni_index: {
                         'eni-id': 'eni-%d' % eni_index,
@@ -97,26 +98,25 @@ class Enis(ConfBase):
                         self.acl_out.dictName(): (x for x in self.acl_out.items(eni_index)),
                         "route-table-v4": "route-table-%d" % eni_index
                     },
-                }
+                })
         self.log_mem('    Finished generating %s' % self.dictName())
         self.log_details('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()))
         self.log_details('    %s: yielded %d items' % (self.acl_in.dictName(), self.acl_in.itemsGenerated()))
         self.log_details('    %s: yielded %d items' % (self.acl_out.dictName(), self.acl_out.itemsGenerated()))
 
-if __name__ == "__main__":
-    conf=Enis()
-    parser=commonArgParser()
+    def main(self):
+        parser=commonArgParser()
 
-    parser.add_argument('-a', '--acls-in', action='store_true',
-            help='Generate ACL IN tables (single ENI), suppress top-level container')
+        parser.add_argument('-a', '--acls-in', action='store_true',
+                help='Generate ACL IN tables (single ENI), suppress top-level container')
 
-    parser.add_argument('-A', '--acls-out', action='store_true',
-            help='Generate ACL OUT tables (single ENI), suppress top-level container')
+        parser.add_argument('-A', '--acls-out', action='store_true',
+                help='Generate ACL OUT tables (single ENI), suppress top-level container')
 
-    parser.add_argument('-e', '--eni-index', type=int, default=1,
-            help='Specify single ENI index for ACL tables')
+        parser.add_argument('-e', '--eni-index', type=int, default=1,
+                help='Specify single ENI index (use with -aA options only)')
 
-    parser.epilog = textwrap.dedent(common_arg_epilog + '''
+        parser.epilog = textwrap.dedent(common_arg_epilog + '''
 
 ENI-specific Examples:
 ======================
@@ -127,23 +127,28 @@ Use repeatedly if you need more ENIs, or write a custom program for other option
 
 python3 dashgen/enis.py -a -e 3                               - generate acl-in entries only, for ENI index 3
 python3 dashgen/enis.py -aA -e 3                              - generate acl-in and acl-out entries, for ENI index 3
-    ''')
+        ''')
 
-    common_parse_args(conf, parser)         
-    log_memory("Start", conf.args.detailed_stats)
-    suppress_top_level = False
+        common_parse_args(self, parser)         
+        self.log_mem("Start")
+        suppress_top_level = False
 
-    if conf.args.acls_in:
-        acl_in=conf.AclsV4In(args=conf.args)
-        common_output(acl_in)
-        suppress_top_level = True
+        if self.args.acls_in:
+            acl_in=self.AclsV4In(args=self.args)
+            common_output(acl_in)
+            suppress_top_level = True
 
-    if conf.args.acls_out:
-        acl_out=conf.AclsV4Out(args=conf.args)
-        common_output(acl_out)
-        suppress_top_level = True
-        
-    if not suppress_top_level:
-        common_output(conf)
+        if self.args.acls_out:
+            acl_out=self.AclsV4Out(args=self.args)
+            common_output(acl_out)
+            suppress_top_level = True
+            
+        if not suppress_top_level:
+            common_output(self)
 
-    log_memory("Done", conf.args.detailed_stats)
+        self.log_mem("Done")
+
+if __name__ == "__main__":
+
+    conf=Enis()
+    conf.main()

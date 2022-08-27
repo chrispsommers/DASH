@@ -9,9 +9,7 @@ class VpcMappingTypes(ConfBase):
         super().__init__('vpc-mappings-routing-types', params, args)
     
     def items(self):
-        log_msg('  Generating %s...' % self.dictName(), self.args.verbose)
-        p=self.params
-        cp=self.cooked_params
+        self.log_verbose('  Generating %s...' % self.dictName())
 
         vpcmappingtypes = [
             "vpc",
@@ -24,8 +22,8 @@ class VpcMappingTypes(ConfBase):
 
             self.numYields+=1
             yield x
-        log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
-        log_msg('    %s: yielded %d items' % (self.dictName(), self.numYields), self.args.detailed_stats)
+        self.log_mem('    Finished generating %s' % self.dictName())
+        self.log_details('    %s: yielded %d items' % (self.dictName(), self.numYields))
 
 if __name__ == "__main__":
     conf=VpcMappingTypes()

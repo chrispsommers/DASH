@@ -10,7 +10,7 @@ class RoutingAppliances(ConfBase):
         super().__init__('routing-appliances', params, args)
     
     def items(self):
-        log_msg('  Generating %s...' % self.dictName(), self.args.verbose)
+        self.log_verbose('  Generating %s...' % self.dictName())
         p=self.params
         cp=self.cooked_params
         # optimizations:
@@ -51,8 +51,8 @@ class RoutingAppliances(ConfBase):
                         "vni-key": r_vpc
                     },
                 }
-        log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
-        log_msg('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()), self.args.detailed_stats)
+        self.log_mem('    Finished generating %s' % self.dictName())
+        self.log_details('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()))
 
 if __name__ == "__main__":
     conf=RoutingAppliances()

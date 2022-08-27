@@ -81,10 +81,8 @@ class RouteTables(ConfBase):
                 
             p=self.params
             cp=self.cooked_params
-            IP_STEP1=cp.IP_STEP1
             IP_STEP4=cp.IP_STEP4
             IP_L_START=cp.IP_L_START
-            IP_ROUTE_DIVIDER_PER_ACL_RULE=p.IP_ROUTE_DIVIDER_PER_ACL_RULE
             ENI_L2R_STEP=p.ENI_L2R_STEP
 
             IP_L = IP_L_START + (eni_index - 1) * IP_STEP4
@@ -112,25 +110,9 @@ class RouteTables(ConfBase):
 
     def items(self):
         self.numYields = 0
-        log_msg('  Generating %s...' % self.dictName(), self.args.verbose)
+        self.log_verbose('  Generating %s...' % self.dictName())
         p=self.params
         cp=self.cooked_params
-        # optimizations:
-        IP_ROUTE_DIVIDER_PER_ACL_RULE=p.IP_ROUTE_DIVIDER_PER_ACL_RULE
-        # IP_PER_ACL_RULE=p.IP_PER_ACL_RULE
-        IP_STEP1=cp.IP_STEP1
-        # IP_STEP2=cp.IP_STEP2
-        # IP_STEP3=cp.IP_STEP3
-        # IP_STEP4=cp.IP_STEP4
-        # IP_STEP1_MULT=IP_ROUTE_DIVIDER_PER_ACL_RULE * IP_STEP1
-        # IP_R_START=cp.IP_R_START
-        # IP_L_START=cp.IP_L_START
-        # ACL_TABLE_COUNT=p.ACL_TABLE_COUNT
-        # ACL_RULES_NSG=p.ACL_RULES_NSG
-        # ENI_L2R_STEP=p.ENI_L2R_STEP
-
-        # nr_of_routes_prefixes = int(math.log(p.IP_ROUTE_DIVIDER_PER_ACL_RULE, 2))
-        
         for eni_index in range(1, p.ENI_COUNT+1):
 
             self.numYields+=1
@@ -139,15 +121,56 @@ class RouteTables(ConfBase):
                     "ROUTE-TABLE:%d" % eni_index: {
                         "route-table-id": "route-table-%d" % eni_index,
                         "ip-version": "IPv4",
-                        # "routes": routes
                         self.routes.dictName(): (x for x in self.routes.items(eni_index)),
                     }
                 }
-        log_memory('    Finished generating %s' % self.dictName(), self.args.detailed_stats)
-        log_msg('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()), self.args.detailed_stats)
-        log_msg('    %s: yielded %d items' % (self.routes.dictName(), self.routes.itemsGenerated()), self.args.detailed_stats)
-        log_msg('    %s: yielded %d items' % (self.routes.ip_prefixes.dictName(), self.routes.ip_prefixes.itemsGenerated()), self.args.detailed_stats)
+        self.log_mem('    Finished generating %s' % self.dictName())
+        self.log_details('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()))
+        self.log_details('    %s: yielded %d items' % (self.routes.dictName(), self.routes.itemsGenerated()))
+        self.log_details('    %s: yielded %d items' % (self.routes.ip_prefixes.dictName(), self.routes.ip_prefixes.itemsGenerated()))
 
 if __name__ == "__main__":
     conf=RouteTables()
-    common_main(conf)
+    parser=commonArgParser()
+
+    parser.add_argument('-i', '--ip-prefixes', action='store_true',
+            help='Generate ip-prefixes, suppress top-level container')
+
+    parser.add_argument('-r', '--routes', action='store_true',
+            help='Generate routes, suppress top-level container')
+
+    parser.add_argument('-e', '--eni-index', type=int, default=1,
+            help='Specify single ENI index (use with -ir options only)')
+
+    parser.epilog = textwrap.dedent(common_arg_epilog + '''
+
+Routetables-specific Examples:
+============================
+
+The -i option allows you to generate ip-prefixes only for one ENI.
+The -r option allows you to generate routes only for one ENI.
+Use repeatedly if you need more instances, or write a custom program for other options.
+Omit -ir to generate entire route tables config per input PARAMs.
+
+python3 dashgen/routetables.py [-p PARAM_FILE] [-P PARAMS]       - generate route tables from global options
+python3 dashgen/routetables.py -i                                - generate ip_prefixes only for ENI=1
+python3 dashgen/routetables.py -r -e 3                           - generate routes only for ENI=3
+    ''')
+
+    common_parse_args(conf, parser)         
+    conf.log_mem("Start")
+    suppress_top_level = False
+
+    if conf.args.ip_prefixes:
+        ip_pre=conf.IpPrefixes(args=conf.args)
+        common_output(ip_pre)
+        suppress_top_level = True
+
+    if conf.args.routes:
+        routes=conf.Routes(args=conf.args)
+        common_output(routes)
+        suppress_top_level = True
+
+    if not suppress_top_level:
+        common_output(conf)
+
