@@ -3,7 +3,7 @@ import sys,resource, time
 #import orjson
 import collections, itertools, json
 import yaml
-import io, sys
+import io, sys, os
 import pprint
 import argparse,textwrap
 
@@ -113,8 +113,9 @@ def writeDictFileIter(config, format, filename='<stdout>'):
 
     # log_memory("writeDictFileIter exit")
 
+program = sys.argv[0].replace('./.','.')
 common_arg_epilog='''
-Usage:
+Usage
 =========
 ./generate.d.py                - generate output to stdout using uber-generator
 ./generate.d.py -o tmp.json    - generate output to file tmp.json
@@ -144,8 +145,8 @@ Misc. Examples:
 ===============
 ./generate.d.py -d -p params_small.py -P "{'ENI_COUNT': 16}"  - use params_small.py but override ENI_COUNT; display params
 ./generate.d.py -p params_hero.py -o tmp.json                 - generate full "hero test" scale config as json file
-dashgen/vpcmappingtypes.py -m -M "Kewl Config!"               - generate dict of vpcmappingtypes, include meta with message            
-            '''
+./dashgen/vpcmappingtypes.py -m -M "Kewl Config!"             - generate dict of vpcmappingtypes, include meta with message            
+            '''.replace('./generate.d.py',program)
 
 def commonArgParser():
 
@@ -236,6 +237,6 @@ def common_output(self):
 def common_main(self):
     common_parse_args(self)
 
-    self.log_memory("Start")
+    self.log_mem("Start")
     common_output(self)
-    self.log_memory("Done")
+    self.log_mem("Done")

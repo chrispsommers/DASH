@@ -105,6 +105,7 @@ class Enis(ConfBase):
         self.log_details('    %s: yielded %d items' % (self.acl_out.dictName(), self.acl_out.itemsGenerated()))
 
     def main(self):
+        program = sys.argv[0].replace('./.','.')
         parser=commonArgParser()
 
         parser.add_argument('-a', '--acls-in', action='store_true',
@@ -125,9 +126,9 @@ Use -a, -A to generate ACL in and/or out tables for a single ENI.
 Omit -a, -A to generate entire ACL group config per input PARAMs.
 Use repeatedly if you need more ENIs, or write a custom program for other options.
 
-python3 dashgen/enis.py -a -e 3                               - generate acl-in entries only, for ENI index 3
-python3 dashgen/enis.py -aA -e 3                              - generate acl-in and acl-out entries, for ENI index 3
-        ''')
+./dashgen/enis.py -a -e 3                               - generate acl-in entries only, for ENI index 3
+./dashgen/enis.py -aA -e 3                              - generate acl-in and acl-out entries, for ENI index 3
+        '''.replace('dashgen/enis.py',program).replace('./.','.'))
 
         common_parse_args(self, parser)         
         self.log_mem("Start")

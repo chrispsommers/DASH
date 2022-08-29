@@ -64,7 +64,8 @@ class AclGroups(ConfBase):
                     "dst_addrs":  ip_list_a[:],
                 }
                 self.numYields+=1
-                yield deepcopy(rule_a)
+                # yield deepcopy(rule_a)
+                yield self.renderItem(rule_a) 
 
                 # rule_id_d = rule_id_a + 1
                 remote_ip_d = remote_ip_a + IP_STEP1
@@ -80,7 +81,8 @@ class AclGroups(ConfBase):
                     "dst_addrs":  ip_list_d[:],
                 }
                 self.numYields+=1
-                yield deepcopy(rule_d)
+                # yield deepcopy(rule_d)
+                yield self.renderItem(rule_d) 
 
             # add as last rule in last table from ingress and egress an allow rule for all the ip's from egress and ingress
             # TODO parameterize num tables
@@ -105,8 +107,9 @@ class AclGroups(ConfBase):
                     "dst_addrs":  ip_list_all[:],
                 }
                 self.numYields+=1
-                yield deepcopy(rule_allow_all)
-    
+                # yield deepcopy(rule_allow_all)
+                yield self.renderItem(rule_allow_all) 
+   
     def items(self):
         self.log_verbose('  Generating %s...' % self.dictName())
         p=self.params
@@ -131,27 +134,26 @@ class AclGroups(ConfBase):
                     }
                 
                 self.numYields+=1
-                yield acl_group
+                yield self.renderItem(acl_group)
         self.log_mem('    Finished generating %s' % self.dictName())
         self.log_details('    %s: yielded %d items' % (self.dictName(), self.itemsGenerated()))
         self.log_details('    %s: yielded %d items' % (self.rules.dictName(), self.rules.itemsGenerated()))
 
 
+    def main(self):
+        program = sys.argv[0].replace('./.','.')
+        parser=commonArgParser()
 
-if __name__ == "__main__":
-    conf=AclGroups()
-    parser=commonArgParser()
+        parser.add_argument('-a', '--acls-ipv4', action='store_true',
+                help='Generate IPv4 ACL group tables, suppress top-level container')
 
-    parser.add_argument('-a', '--acls-ipv4', action='store_true',
-            help='Generate IPv4 ACL group tables, suppress top-level container')
+        parser.add_argument('-e', '--eni-index', type=int, default=1,
+                help='Specify single ENI index (use with -a option only)')
 
-    parser.add_argument('-e', '--eni-index', type=int, default=1,
-            help='Specify single ENI index (use with -a option only)')
+        parser.add_argument('-t', '--table-index', type=int, default=1,
+                help='Specify single table index (use with -a option only)')
 
-    parser.add_argument('-t', '--table-index', type=int, default=1,
-            help='Specify single table index (use with -a option only)')
-
-    parser.epilog = textwrap.dedent(common_arg_epilog + '''
+        parser.epilog = textwrap.dedent(common_arg_epilog + '''
 
 ACL Group-specific Examples:
 ============================
@@ -163,21 +165,25 @@ Omit -a to generate entire ACL groups config per input PARAMs.
 The output from -a option will NOT have an enclosing container with ACL group but the IP addresses,
 etc. will correspond to the ACL group rules obtained using the normal "full output" (no -a option).
 
-python3 dashgen/aclgroups.py [-p PARAM_FILE] [-P PARAMS]       - generate ACL entries and group container using PARAMs from global options
-python3 dashgen/aclgroups.py -a                                - generate ACL rules only for ENI=1 Group=1001
-python3 dashgen/aclgroups.py -a -e 3 -t 2                      - generate ACL rules only for ENI=3 Group=3002
-    ''')
+./dashgen/aclgroups.py [-p PARAM_FILE] [-P PARAMS]       - generate ACL entries and group container using PARAMs from global options
+./dashgen/aclgroups.py -a                                - generate ACL rules only for ENI=1 Group=1001
+./dashgen/aclgroups.py -a -e 3 -t 2                      - generate ACL rules only for ENI=3 Group=3002
+        '''.replace('dashgen/enis.py',program).replace('./.','.'))
 
-    common_parse_args(conf, parser)         
-    conf.log_mem("Start")
-    suppress_top_level = False
+        common_parse_args(self, parser)         
+        self.log_mem("Start")
+        suppress_top_level = False
 
-    if conf.args.acls_ipv4:
-        acl_in=conf.AclRulesIpv4(args=conf.args)
-        common_output(acl_in)
-        suppress_top_level = True
+        if self.args.acls_ipv4:
+            acl_in=self.AclRulesIpv4(args=self.args)
+            common_output(acl_in)
+            suppress_top_level = True
 
-    if not suppress_top_level:
-        common_output(conf)
+        if not suppress_top_level:
+            common_output(self)
 
-    conf.log_mem("Done")
+        self.log_mem("Done")
+
+if __name__ == "__main__":
+    conf=AclGroups()
+    conf.main()
