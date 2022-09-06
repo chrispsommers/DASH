@@ -75,7 +75,8 @@ Two anticipated applications (see Figure below):
 ![confgen-apps](confgen-apps.svg)
 
 ## SAI-Challenger Integration
-The figure below depicts the integration of the *dashgen* configuration generator and the SAI-Challenger pytest framework.
+The figure below depicts the integration of the *saigen* configuration generator and the SAI-Challenger pytest framework.
+![saichallenger-enhanced](saichallenger-enhanced.svg)
 
 The generator is one of several options to produce SAI configuration *records* which are applied to the DUT via one of several possible APIs, including saithrift, sairedis, gNMI, etc. The generator can provide streaming records which are translated on-the-fly into appropriate device API calls.
 
@@ -84,6 +85,11 @@ In addition, the generator can produce textual representations (e.g. JSON, YAML)
 Finally, the framework can use literal configuration declarations represented as JSON, YAML, Python structures, etc. embedded directly into test-case code. This makes the most sense when the test cases are relatively simple.
 
 Due to schema and/or semantic differences, a separate gNMI configuration generator might be preferred vs. translating the canonical SAI records into equivalent gNMI records for application to the gNMI interface.
+
+
+
+### Detailed saigen-Sai Challenger Integration Diagram
+The following diagram reproduces the detailed inner structure of saigen and shows how a testcase can utilize the generator as imported Python modules to turbo-charge test-cases.
 
 ![confgen-saichallenger.svg](confgen-saichallenger.svg)
 # TODO
@@ -94,6 +100,177 @@ Due to schema and/or semantic differences, a separate gNMI configuration generat
 * logging levels -v, -vv, -vvv etc., otherwise silent on stderr
 * -O, --optimize flags for speed or memory (for speed - expand lists in-memory and use orjson serializer, like original code)
 * Use nested generators inside each sub-generator, instead of nested loops, to reduce in-memory usage; may require enhancing JSON output streaming to use recursion etc.
+## Sample Config Format
+
+This is taken from [sample_generator_output.txt](https://github.com/plvisiondevs/SAI-Challenger.OCP/pull/3/files#diff-76e960deeab1d16712519482c671943fb847332eca3d3ebd2152aaa96a3c120b) and is a temporary snapshot of work-in-progress; a final version will be provided in the future.
+
+Compare this to the PTF test-case [test_saithrift_vnet.py](https://github.com/Azure/DASH/blob/main/dash-pipeline/tests/saithrift/ptf/vnet/test_saithrift_vnet.py) which contains a mix of saithrift-specific data structure creationg and API calls.
+
+
+```
+{
+    "op" : "create",
+    "type" : "OBJECT_TYPE_VIP_ENTRY",
+    "key" : {
+        "switch_id" : "$SWITCH_ID",
+        "vip" : "192.168.0.1"
+    },
+    "attributes" : [ "SAI_VIP_ENTRY_ATTR_ACTION", "SAI_VIP_ENTRY_ACTION_ACCEPT" ]
+},
+{
+    "op" : "create",
+    "type" : "SAI_OBJECT_TYPE_DIRECTION_LOOKUP_ENTRY",
+    "key" : {
+        "switch_id" : "$SWITCH_ID",
+        "vni" : "2000"
+    },
+    "attributes" : [ "SAI_DIRECTION_LOOKUP_ENTRY_ATTR_ACTION", "SAI_DIRECTION_LOOKUP_ENTRY_ACTION_SET_OUTBOUND_DIRECTION" ]
+},
+{
+    "op" : "create",
+    "type" : "SAI_OBJECT_TYPE_DASH_ACL_GROUP",
+    "key": "$acl_in_1",
+    "attributes" : [ "SAI_DASH_ACL_GROUP_ATTR_IP_ADDR_FAMILY", "SAI_IP_ADDR_FAMILY_IPV4" ]
+},
+{
+    "op" : "create",
+    "type" : "SAI_OBJECT_TYPE_DASH_ACL_GROUP",
+    "key": "$acl_out_1",
+    "attributes" : [ "SAI_DASH_ACL_GROUP_ATTR_IP_ADDR_FAMILY", "SAI_IP_ADDR_FAMILY_IPV4" ]
+},
+{
+    "op" : "create",
+    "type" : "SAI_OBJECT_TYPE_VNET",
+    "key" : "$vnet_1",
+    "attributes" : [ "SAI_VNET_ATTR_VNI", "2000" ]
+},
+{
+    "op": "create",
+    "type" : "SAI_OBJECT_TYPE_ENI",
+    "key" : "$eni_id",
+    "attributes" : [ "SAI_ENI_ATTR_CPS", "10000",
+                     "SAI_ENI_ATTR_PPS", "100000",
+                     "SAI_ENI_ATTR_FLOWS", "100000",
+                     "SAI_ENI_ATTR_ADMIN_STATE", "True",
+                     "SAI_ENI_ATTR_VM_UNDERLAY_DIP", "10.10.10.10",
+                     "SAI_ENI_ATTR_VM_VNI", "9",
+                     "SAI_ENI_ATTR_VNET_ID", "$vnet_1",
+                     "SAI_ENI_ATTR_INBOUND_V4_STAGE1_DASH_ACL_GROUP_ID", "$acl_in_1",
+                     "SAI_ENI_ATTR_INBOUND_V4_STAGE2_DASH_ACL_GROUP_ID", "$acl_in_1",
+                     "SAI_ENI_ATTR_INBOUND_V4_STAGE3_DASH_ACL_GROUP_ID", "$acl_in_1",
+                     "SAI_ENI_ATTR_INBOUND_V4_STAGE4_DASH_ACL_GROUP_ID", "$acl_in_1",
+                     "SAI_ENI_ATTR_INBOUND_V4_STAGE5_DASH_ACL_GROUP_ID", "$acl_in_1",
+                     "SAI_ENI_ATTR_INBOUND_V6_STAGE1_DASH_ACL_GROUP_ID", "$acl_out_1",
+                     "SAI_ENI_ATTR_INBOUND_V6_STAGE2_DASH_ACL_GROUP_ID", "$acl_out_1",
+                     "SAI_ENI_ATTR_INBOUND_V6_STAGE3_DASH_ACL_GROUP_ID", "$acl_out_1",
+                     "SAI_ENI_ATTR_INBOUND_V6_STAGE4_DASH_ACL_GROUP_ID", "$acl_out_1",
+                     "SAI_ENI_ATTR_INBOUND_V6_STAGE5_DASH_ACL_GROUP_ID", "$acl_out_1",
+                     "SAI_ENI_ATTR_OUTBOUND_V4_STAGE1_DASH_ACL_GROUP_ID", "0",
+                     "SAI_ENI_ATTR_OUTBOUND_V4_STAGE2_DASH_ACL_GROUP_ID", "0",
+                     "SAI_ENI_ATTR_OUTBOUND_V4_STAGE3_DASH_ACL_GROUP_ID", "0",
+                     "SAI_ENI_ATTR_OUTBOUND_V4_STAGE4_DASH_ACL_GROUP_ID", "0",
+                     "SAI_ENI_ATTR_OUTBOUND_V4_STAGE5_DASH_ACL_GROUP_ID", "0",
+                     "SAI_ENI_ATTR_OUTBOUND_V6_STAGE1_DASH_ACL_GROUP_ID", "0",
+                     "SAI_ENI_ATTR_OUTBOUND_V6_STAGE2_DASH_ACL_GROUP_ID", "0",
+                     "SAI_ENI_ATTR_OUTBOUND_V6_STAGE3_DASH_ACL_GROUP_ID", "0",
+                     "SAI_ENI_ATTR_OUTBOUND_V6_STAGE4_DASH_ACL_GROUP_ID", "0",
+                     "SAI_ENI_ATTR_OUTBOUND_V6_STAGE5_DASH_ACL_GROUP_ID", "0" ]
+},
+{
+    "op" : "create",
+    "type" : "SAI_OBJECT_TYPE_ENI_ETHER_ADDRESS_MAP_ENTRY",
+    "key" : {
+        "switch_id" : "$SWITCH_ID",
+        "address" : "00:AA:AA:AA:AA:00"
+    },
+    "attributes" : [ "SAI_ENI_ETHER_ADDRESS_MAP_ENTRY_ATTR_ENI_ID", "$eni_id" ]
+},
+{
+    "op" : "create",
+    "type" : "SAI_OBJECT_TYPE_INBOUND_ROUTING_ENTRY",
+    "key" : {
+        "switch_id" : "$SWITCH_ID",
+        "vni" : "1000",
+    },
+    "attributes" : [ "SAI_INBOUND_ROUTING_ENTRY_ATTR_ACTION", "SAI_INBOUND_ROUTING_ENTRY_ACTION_VXLAN_DECAP_PA_VALIDATE" ]
+},
+{
+    "op" : "create",
+    "type" : "SAI_OBJECT_TYPE_PA_VALIDATION_ENTRY",
+    "key" : {
+        "switch_id" : "$SWITCH_ID",
+        "eni_id" : "$eni_id",
+        "sip" : "20.20.20.20",
+        "vni" : "1000"
+    },
+    "attributes" : [ "SAI_PA_VALIDATION_ENTRY_ATTR_ACTION", "SAI_PA_VALIDATION_ENTRY_ACTION_PERMIT" ]
+}
+
+
+
+{
+    "op" : "remove",
+    "type" : "SAI_OBJECT_TYPE_PA_VALIDATION_ENTRY",
+    "key" : {
+        "switch_id" : "$SWITCH_ID",
+        "eni_id" : "$eni_id",
+        "sip" : "20.20.20.20",
+        "vni" : "1000"
+    }
+},
+{
+    "op" : "remove",
+    "type" : "SAI_OBJECT_TYPE_INBOUND_ROUTING_ENTRY",
+    "key" : {
+        "switch_id" : "$SWITCH_ID",
+        "vni" : "1000",
+    }
+},
+{
+    "op" : "remove",
+    "type" : "SAI_OBJECT_TYPE_ENI_ETHER_ADDRESS_MAP_ENTRY",
+    "key" : {
+        "switch_id" : "$SWITCH_ID",
+        "address" : "00:AA:AA:AA:AA:00"
+    }
+},
+{
+    "op": "remove",
+    "type" : "SAI_OBJECT_TYPE_ENI",
+    "key" : "$eni_id"
+},
+{
+    "op" : "remove",
+    "type" : "SAI_OBJECT_TYPE_VNET",
+    "key" : "$vnet_1"
+},
+{
+    "op" : "remove",
+    "type" : "SAI_OBJECT_TYPE_DASH_ACL_GROUP",
+    "key": "$acl_out_1"
+},
+{
+    "op" : "remove",
+    "type" : "SAI_OBJECT_TYPE_DASH_ACL_GROUP",
+    "key": "$acl_in_1"
+},
+{
+    "op" : "remove",
+    "type" : "SAI_OBJECT_TYPE_DIRECTION_LOOKUP_ENTRY",
+    "key" : {
+        "switch_id" : "$SWITCH_ID",
+        "vni" : "2000"
+    }
+},
+{
+    "op" : "remove",
+    "type" : "OBJECT_TYPE_VIP_ENTRY",
+    "key" : {
+        "switch_id" : "$SWITCH_ID",
+        "vip" : "192.168.0.1"
+    }
+}
+```
 ## Comparisons - confgen, confgen2
 
 ### confgen - original design
