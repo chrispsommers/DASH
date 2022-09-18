@@ -78,15 +78,13 @@ Two anticipated applications (see Figure below):
 The figure below depicts the integration of the *saigen* configuration generator and the SAI-Challenger pytest framework.
 ![saichallenger-enhanced](saichallenger-enhanced.svg)
 
-The generator is one of several options to produce SAI configuration *records* which are applied to the DUT via one of several possible APIs, including saithrift, sairedis, gNMI, etc. The generator can provide streaming records which are translated on-the-fly into appropriate device API calls.
+The generator is one of several options to produce SAI (or possibly gNMI) configuration *records* which are applied to the DUT via one of several possible APIs, including saithrift, sairedis, gNMI, etc. The generator can provide streaming records which are translated on-the-fly into appropriate device API calls.
 
 In addition, the generator can produce textual representations (e.g. JSON, YAML) of configuration records for usage as stored configurations which the framework can consume as test data input. Configuration files can be produced by other means including other scripts, text-editors, etc.
 
 Finally, the framework can use literal configuration declarations represented as JSON, YAML, Python structures, etc. embedded directly into test-case code. This makes the most sense when the test cases are relatively simple.
 
 Due to schema and/or semantic differences, a separate gNMI configuration generator might be preferred vs. translating the canonical SAI records into equivalent gNMI records for application to the gNMI interface.
-
-
 
 ### Detailed saigen-Sai Challenger Integration Diagram
 The following diagram reproduces the detailed inner structure of saigen and shows how a testcase can utilize the generator as imported Python modules to turbo-charge test-cases.
