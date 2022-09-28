@@ -12,9 +12,8 @@ See also:
   - [Running/Stopping the saithrift server](#runningstopping-the-saithrift-server)
   - [Production - Launch container, run tests in one shot](#production---launch-container-run-tests-in-one-shot)
     - [Passing options to PTF Tests via make command](#passing-options-to-ptf-tests-via-make-command)
-    - [Passing options to Pyests via make command](#passing-options-to-pyests-via-make-command)
+    - [Passing options to Pytests via make command](#passing-options-to-pytests-via-make-command)
   - [Development - Launch container, run tests in one shot](#development---launch-container-run-tests-in-one-shot)
-    - [Passing options to PTF tests](#passing-options-to-ptf-tests)
 - [Developer: Run tests selectively from `bash` inside saithrift-client container](#developer-run-tests-selectively-from-bash-inside-saithrift-client-container)
   - [Select Directory - Container prebuilt directory, or mounted from host](#select-directory---container-prebuilt-directory-or-mounted-from-host)
 - [Test aftermath and clearing the switch config](#test-aftermath-and-clearing-the-switch-config)
@@ -77,10 +76,10 @@ make run-saithrift-ptftests  . test_saithrift_vnet
 ```
 make run-saithrift-ptfests  [TEST_DIR [TESTCLASS] ]
 ```
-### Passing options to Pyests via make command
+### Passing options to Pytests via make command
 You can pass a few Pytest options via the `make` commands. This provides a very limited ability to call tests selectively. Also see [Developer: Run tests selectively from `bash` inside saithrift-client container](#developer-run-tests-selectively-from-bash-inside-saithrift-client-container) for how to call Pytest commands directly, allowing even more control.
 ```
-[PYTEST_OPTS='OPTIONS'] make run-saithrift-pyests [TEST_DIR]
+[PYTEST_OPTS='OPTIONS'] make run-saithrift-pytests [TEST_DIR]
 ```
 There are two optional parameters:
 * `TEST_DIR` which is the test subdirectory relative to `dash-pipeline/tests/saithrift/pytest` and defaults to `.`
@@ -117,7 +116,7 @@ make run-saithrift-client-dev-pytests     # run Pytests from host mount
 make run-saithrift-client-dev-ptftests    # run PTF tests from host mount
 make run-saithrift-client-dev-tests       # run both suites above
 ```
-You can pass the same optional parameters to these make targets as described in [Passing options to PTF Tests via make command](#passing-options-to-ptf-tests-via-make-command) and [Passing options to Pyests via make command](#passing-options-to-pyests-via-make-command).
+You can pass the same optional parameters to these make targets as described in [Passing options to PTF Tests via make command](#passing-options-to-ptf-tests-via-make-command) and [Passing options to Pytests via make command](#passing-options-to-pytests-via-make-command).
 
 # Developer: Run tests selectively from `bash` inside saithrift-client container
 Enter the container, this will place you in the `/tests-dev/` directory of the container which corresponds to the contents of the `DASH/dash-pipline/tests` directory on the host. In this way you can interactively run test-cases while you're editing them. When doing so, the container's `/tests` directory remains in-place with tests which were copied into the container at image build-time.
