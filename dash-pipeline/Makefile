@@ -360,12 +360,39 @@ DOCKER_RUN_SAITHRIFT_CLIENT=\
 	-w /tests/ \
 	$(DOCKER_FLAGS) \
 
+#################################################
+# "Run Test" targets
+#################################################
+# Have to pass options as single string from env
+PYTEST_OPTS?=
+# Add passing parameters to the run-saithrift-pytests targets.
+ifeq (run-saithrift-pytests,$(firstword $(MAKECMDGOALS)))
+  PYTEST_DIR := $(wordlist 2, 2, $(MAKECMDGOALS))
+#   PYTEST_OPTS := $(wordlist 3, 99, $(MAKECMDGOALS))
+  $(eval $(PYTEST_DIR):;@:)
+endif
+ifeq (run-saithrift-dev-pytests,$(firstword $(MAKECMDGOALS)))
+  PYTEST_DIR := $(wordlist 2, 2, $(MAKECMDGOALS))
+#   PYTEST_OPTS := $(wordlist 3, 99, $(MAKECMDGOALS))
+  $(eval $(PYTEST_DIR):;@:)
+endif
+# If test directory isn't passed, set it to the default.
+ifeq ($(PYTEST_DIR),)
+PYTEST_DIR := .
+endif
+# If test options aren't passed, set it to empty.
+ifeq ($(PYTEST_OPTS),)
+PYTEST_OPTS := 
+endif
+
+
 # Run "production" Pytests bundled inside docker
 run-saithrift-pytests:deploy-ixiac disable-ipv6
 	$(DOCKER_RUN_SAITHRIFT_CLIENT) \
 	-w /tests/saithrift/pytest \
 	$(DOCKER_SAITHRIFT_CLIENT_IMG) \
-	./run-saithrift-pytests.sh
+	./run-saithrift-pytests.sh $(PYTEST_DIR) $(PYTEST_OPTS)
+
 
 # Run "dev" tests mounted from host
 run-saithrift-dev-pytests:deploy-ixiac disable-ipv6
@@ -373,7 +400,29 @@ run-saithrift-dev-pytests:deploy-ixiac disable-ipv6
 	-v $(PWD)/tests/:/tests-dev/ \
 	-w /tests-dev/saithrift/pytest \
 	$(DOCKER_SAITHRIFT_CLIENT_IMG) \
-	./run-saithrift-pytests.sh
+	./run-saithrift-pytests.sh $(PYTEST_DIR) $(PYTEST_OPTS)
+
+# Add passing parameters to the run-saithrift-ptftests targets.
+ifeq (run-saithrift-ptftests,$(firstword $(MAKECMDGOALS)))
+  PTF_TESTDIR := $(wordlist 2, 2, $(MAKECMDGOALS))
+  PTF_TESTCLASS := $(wordlist 3, 3, $(MAKECMDGOALS))
+  $(eval $(PTF_TESTDIR):;@:)
+  $(eval $(PTF_TESTCLASS):;@:)
+endif
+ifeq (run-saithrift-dev-ptftests,$(firstword $(MAKECMDGOALS)))
+  PTF_TESTDIR := $(wordlist 2, 2, $(MAKECMDGOALS))
+  PTF_TESTCLASS := $(wordlist 3, 3, $(MAKECMDGOALS))
+  $(eval $(PTF_TESTDIR):;@:)
+  $(eval $(PTF_TESTCLASS):;@:)
+endif
+# If test directory isn't passed, set it to the default.
+ifeq ($(PTF_TESTDIR),)
+PTF_TESTDIR := .
+endif
+# If test's name isn't passed, set it to the default.
+ifeq ($(PTF_TESTCLASS),)
+PTF_TESTCLASS := 
+endif
 
 # Run "production" PTF tests bundled inside docker
 # Note - if add ixia-c usage to PTF tests, add dependency deploy-ixiac
@@ -381,7 +430,7 @@ run-saithrift-ptftests: disable-ipv6
 	$(DOCKER_RUN_SAITHRIFT_CLIENT) \
 	-w /tests/saithrift/ptf \
 	$(DOCKER_SAITHRIFT_CLIENT_IMG) \
-	./run-saithrift-ptftests.sh
+	./run-saithrift-ptftests.sh $(PTF_TESTDIR) $(PTF_TESTCLASS)
 
 # Run "dev" PTF tests mounted from host
 # Note - if add ixia-c usage to PTF tests, add dependency deploy-ixiac
@@ -390,7 +439,7 @@ run-saithrift-dev-ptftests: disable-ipv6
 	-v $(PWD)/tests/:/tests-dev/ \
 	-w /tests-dev/saithrift/ptf \
 	$(DOCKER_SAITHRIFT_CLIENT_IMG) \
-	./run-saithrift-ptftests.sh
+	./run-saithrift-ptftests.sh $(PTF_TESTDIR) $(PTF_TESTCLASS)
 
 run-saithrift-client-bash:
 	$(DOCKER_RUN_SAITHRIFT_CLIENT) \

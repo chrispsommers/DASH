@@ -11,7 +11,10 @@ See also:
 - [Running DASH saithrift tests](#running-dash-saithrift-tests)
   - [Running/Stopping the saithrift server](#runningstopping-the-saithrift-server)
   - [Production - Launch container, run tests in one shot](#production---launch-container-run-tests-in-one-shot)
+    - [Passing options to PTF Tests via make command](#passing-options-to-ptf-tests-via-make-command)
+    - [Passing options to Pyests via make command](#passing-options-to-pyests-via-make-command)
   - [Development - Launch container, run tests in one shot](#development---launch-container-run-tests-in-one-shot)
+    - [Passing options to PTF tests](#passing-options-to-ptf-tests)
 - [Developer: Run tests selectively from `bash` inside saithrift-client container](#developer-run-tests-selectively-from-bash-inside-saithrift-client-container)
   - [Select Directory - Container prebuilt directory, or mounted from host](#select-directory---container-prebuilt-directory-or-mounted-from-host)
 - [Test aftermath and clearing the switch config](#test-aftermath-and-clearing-the-switch-config)
@@ -41,9 +44,69 @@ This will run all the tests built into the `dash-saithrift-client` docker image.
 
 Calling these make targets spins up a `saithrift-client` container on-the-fly, runs tests and kills the container. It's very lightweight.
 ```
-make run-saithrift-client-pytests     # run Pytests from container's scripts
-make run-saithrift-client-ptftests    # run PTF tests from container's scripts
+make run-saithrift-pytests     # run Pytests from container's scripts
+make run-saithrift-ptftests    # run PTF tests from container's scripts
 make run-saithrift-client-tests       # run both suites above
+```
+
+### Passing options to PTF Tests via make command
+You can pass a few PTF options via the `make` commands. This provides a very limited ability to call tests selectively. Also see [Developer: Run tests selectively from `bash` inside saithrift-client container](#developer-run-tests-selectively-from-bash-inside-saithrift-client-container) for how to call PTF commands directly, allowing even more control.
+```
+make run-saithrift-ptfests  [TEST_DIR [TESTCLASS] ]
+```
+The first optional parameter is the test directory relative to `dash-pipeline/tests/saithrft/ptf` and defaults to `.`
+ The second optional parameter is a test name, which can have a few forms. The PTF framework will filter and run tests which match the patterns.
+ * `TEST_CLASS`
+ * `MODULE_NAME` e.g. name of the python file without the `.py` extension
+ * `MODULE_NAME.TEST_CLASS`
+
+Examples:
+```
+# Run all tests in vnet directory:
+make run-saithrift-ptftests  vnet
+
+# Run specific test class in vnet directory:
+make run-saithrift-ptftests  vnet TestSaiThrift_outbound_udp_pkt
+
+# Run specific test class in vnet/test_saithrift_vnet.py file:
+make run-saithrift-ptftests  vnet test_saithrift_vnet.TestSaiThrift_outbound_udp_pkt
+
+# Run any test class in test_saithrift_vnet.py file (any directory)
+make run-saithrift-ptftests  . test_saithrift_vnet
+```
+```
+make run-saithrift-ptfests  [TEST_DIR [TESTCLASS] ]
+```
+### Passing options to Pyests via make command
+You can pass a few Pytest options via the `make` commands. This provides a very limited ability to call tests selectively. Also see [Developer: Run tests selectively from `bash` inside saithrift-client container](#developer-run-tests-selectively-from-bash-inside-saithrift-client-container) for how to call Pytest commands directly, allowing even more control.
+```
+[PYTEST_OPTS='OPTIONS'] make run-saithrift-pyests [TEST_DIR]
+```
+There are two optional parameters:
+* `TEST_DIR` which is the test subdirectory relative to `dash-pipeline/tests/saithrift/pytest` and defaults to `.`
+* `PYTEST_OPTS` passed as an environment variable, due to the difficulty of passing `make` parameters containing flag-style options e.g. `-k ...`
+
+Examples are given below.
+>**NOTE:** Please observe the crucial quoting and `\"` escaping syntax for `PYTEST_OPTS` when you use a logical expression passed to a flag such as `-k` or `-m`.
+```
+# Run all Pytests under the vnet/ directory
+make run-saithrift-pytests vnet
+
+# Run all Pytests matching string "eni"
+PYTEST_OPTS='-k eni' make run-saithrift-pytests
+
+# Run all Pytests matching string "eni" or string "vnet" - note escaped quotes around the logical expression
+PYTEST_OPTS='-k \"eni or vnet\"' make run-saithrift-pytests
+
+# Run all Pytests marked with "bmv2"
+PYTEST_OPTS='-m \"bmv2\"' make run-saithrift-pytests
+
+# Run all Pytests marked with "bmv2" or "vnet" - note escaped quotes around the logical expression
+PYTEST_OPTS='-m \"bmv2 or vnet\"' make run-saithrift-pytests
+
+# Run all Pytests marked with "bmv2" under the "vnet/" directory
+PYTEST_OPTS='-m bmv2' make run-saithrift-pytests vnet
+
 ```
 ## Development - Launch container, run tests in one shot
 You can run tests based on the current state of the `dash-pipeline/tests/` directory without rebuilding the `saithrift-client` docker image. Instead of running tests built into the container and stored under `/tests`, a host volume `dash-pipeline/tests` is mounted to container `/tests-dev`) and tests are run from there. This allows rapid incremental test-case development. When doing so, the container's `/test` directory remains in-place with tests which were copied into the container at image build-time.
@@ -54,8 +117,8 @@ make run-saithrift-client-dev-pytests     # run Pytests from host mount
 make run-saithrift-client-dev-ptftests    # run PTF tests from host mount
 make run-saithrift-client-dev-tests       # run both suites above
 ```
+You can pass the same optional parameters to these make targets as described in [Passing options to PTF Tests via make command](#passing-options-to-ptf-tests-via-make-command) and [Passing options to Pyests via make command](#passing-options-to-pyests-via-make-command).
 
-**TODO:** - pass params to the container to select tests etc.
 # Developer: Run tests selectively from `bash` inside saithrift-client container
 Enter the container, this will place you in the `/tests-dev/` directory of the container which corresponds to the contents of the `DASH/dash-pipline/tests` directory on the host. In this way you can interactively run test-cases while you're editing them. When doing so, the container's `/tests` directory remains in-place with tests which were copied into the container at image build-time.
 ```
