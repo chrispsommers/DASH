@@ -38,7 +38,7 @@ DOCKER_BMV2_BLDR_IMG ?=chrissommers/dash-bmv2-bldr:220819
 DOCKER_BMV2_RUN_IMG ?=$(DOCKER_BMV2_BLDR_IMG)
 
 # Compiles sai headers, libsai, saithrift server & client/server libs
-DOCKER_SAITHRIFT_BLDR_IMG ?=chrissommers/dash-saithrift-bldr:220819
+DOCKER_SAITHRIFT_BLDR_IMG ?=chrissommers/dash-saithrift-bldr:220930
 
 # Base image with test frameworks, DASH client libs not installed
 DOCKER_SAITHRIFT_CLIENT_BLDR_IMG ?=chrissommers/dash-saithrift-client-bldr:220819
@@ -163,13 +163,15 @@ sai-clean: SAI/SAI libsai-clean saithrift-server-clean
 	rm -rf SAI/SAI/inc SAI/SAI/experimental SAI/SAI/meta
 	cd SAI/SAI && git checkout -- inc experimental meta
 
-
 # Run to recreate same environment as building saithrift client & server
 run-saithrift-bldr-bash:
 	$(DOCKER_RUN_SAITHRIFT_BLDR) \
 	    /bin/bash
 
-######################################
+exec-saithrift-server:
+	docker exec -it dash-saithrift-server-$(USER) bash
+
+	######################################
 # P4 Behavioral-model (switch) TARGETS
 ######################################
 

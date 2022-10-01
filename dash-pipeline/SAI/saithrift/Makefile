@@ -44,6 +44,10 @@ saithrift-server:
 	@echo "Build SAI thrift server and libraries..."
 	mkdir -p $(RPC_INST_DIR) && chmod a+w $(RPC_INST_DIR)
 
+	# Note, this indirectly calls perl -Irpc gensairpc.pl $GEN_SAIRPC_OPTS to generate RPC code
+	# To develop perl codegen templates:
+	# make run-saithrift-server-bash; cd /SAI/SAI/meta; perl -Irpc gensairpc.pl -ve
+	# then examine resulting sai_rpc_server.cpp; if OK, then exit & make docker-saithrift-bldr saithrift-server
 	cd $(SAI) && export SAITHRIFTV2=y && \
 		export GEN_SAIRPC_OPTS="-ve" && \
 		export SAIRPC_EXTRA_LIBS=$(SAIRPC_EXTRA_LIBS) && \
