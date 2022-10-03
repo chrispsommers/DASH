@@ -32,6 +32,7 @@ sai_status_t sai_create_{{ table.name }}(
         _In_ sai_object_id_t switch_id,
         _In_ uint32_t attr_count,
         _In_ const sai_attribute_t *attr_list) { 
+    LOG("sai_status_t sai_create_{{ table.name }}()" << endl);
     p4::v1::TableEntry * matchActionEntry = new p4::v1::TableEntry();
     pi_p4_id_t tableId = {{table.id}};
         // There shall be one and only one action_type
@@ -197,6 +198,7 @@ sai_status_t sai_create_{{ table.name }}(
         _In_ const sai_{{ table.name }}_t *{{ table.name }},
         _In_ uint32_t attr_count,
         _In_ const sai_attribute_t *attr_list) { 
+    LOG("sai_status_t sai_create_{{ table.name }}()" << endl);
     p4::v1::TableEntry * matchActionEntry = new p4::v1::TableEntry();
     pi_p4_id_t tableId = {{table.id}};
     matchActionEntry->set_table_id(tableId);
@@ -308,6 +310,7 @@ ErrRet:
 
 sai_status_t sai_remove_{{ table.name }}(
         _In_ const sai_{{ table.name }}_t *{{ table.name }}) { 
+    LOG("sai_status_t sai_create_{{ table.name }}()" << endl);
     p4::v1::TableEntry * matchActionEntry = new p4::v1::TableEntry();
     pi_p4_id_t tableId = {{table.id}};
     matchActionEntry->set_table_id(tableId);
