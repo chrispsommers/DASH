@@ -3,7 +3,7 @@ import saichallenger.dataplane.traffic_utils as tu
 from collections import namedtuple
 
 
-def configure_vnet_outbound_packet_flows(sai_dp, vip, dir_lookup, ca_smac, ca_dip, pkt_count=1, pps=50, duration=0):
+def configure_vnet_outbound_packet_flows(sai_dp, vip, dir_lookup, ca_smac, ca_sip, ca_dip, pkt_count=1, pps=50, duration=0):
     """
     Define VNET Outbound routing flows.
 
@@ -12,6 +12,7 @@ def configure_vnet_outbound_packet_flows(sai_dp, vip, dir_lookup, ca_smac, ca_di
         vip (namedtuple(name, 'count start step')): DASH VIP.
         dir_lookup (namedtuple(name, 'count start step')): direction lookup vni.
         ca_smac (namedtuple(name, 'count start step')): client source MAC.
+        ca_sip (namedtuple(name, 'count start step')): client source IP.
         ca_dip (namedtuple(name, 'count start step')): client destination IP.
         pkt_count (int): count of packets to send per each flow. Default is 1.
         pps (int): packet per second for each flow. Default is 50.
@@ -31,10 +32,13 @@ def configure_vnet_outbound_packet_flows(sai_dp, vip, dir_lookup, ca_smac, ca_di
         for dir_lookup_number in range(0, dir_lookup.count):
             print(f"\t\tDIR_LOOKUP VNI {dir_lookup_val}")
             ca_smac_val = ca_smac.start
+            ca_sip_val = ca_sip.start
 
             ca_smac_start_index = dir_lookup_number * ca_smac_portion
             for ca_smac_number in range(ca_smac_start_index, ca_smac_start_index + ca_smac_portion):
+                # NOTE: ca_smac_number should be the same as ca_sip_number
                 print(f"\t\t\tCA SMAC: {tu.get_next_mac(ca_smac_val, step=ca_smac.step, number=ca_smac_number)}")
+                print(f"\t\t\tCA SIP: {tu.get_next_ip(ca_sip_val, step=ca_sip.step, number=ca_smac_number)}")
                 print(f"\t\t\t\tCA DIP {ca_dip.start}, count: {ca_dip.count}, step: {ca_dip.step}")
                 flow = sai_dp.add_flow("flow {} > {} |vip#{}|dir_lookup#{}|ca_mac#{}|ca_dip#{}".format(
                                             sai_dp.configuration.ports[0].name, sai_dp.configuration.ports[1].name,
@@ -42,7 +46,8 @@ def configure_vnet_outbound_packet_flows(sai_dp, vip, dir_lookup, ca_smac, ca_di
                                        packet_count=ca_dip.count * pkt_count, pps=pps, seconds_count=duration)
 
                 sai_dp.add_ethernet_header(flow, dst_mac="00:00:02:03:04:05", src_mac="00:00:05:06:06:06")
-                sai_dp.add_ipv4_header(flow, dst_ip=vip_val, src_ip="172.16.1.1")
+                sai_dp.add_ipv4_header(flow, dst_ip=vip_val,
+                                       src_ip=tu.get_next_ip(ca_sip_val, step=ca_sip.step, number=ca_smac_number))
                 sai_dp.add_udp_header(flow, dst_port=80, src_port=11638)
                 sai_dp.add_vxlan_header(flow, vni=dir_lookup_val)
                 sai_dp.add_ethernet_header(flow, dst_mac="02:02:02:02:02:02",
@@ -50,7 +55,7 @@ def configure_vnet_outbound_packet_flows(sai_dp, vip, dir_lookup, ca_smac, ca_di
 
                 sai_dp.add_ipv4_header(flow, dst_ip=ca_dip.start, src_ip="10.1.1.10",
                                        dst_step=ca_dip.step, dst_count=ca_dip.count,
-                                    dst_choice=snappi.PatternFlowIpv4Dst.INCREMENT)
+                                       dst_choice=snappi.PatternFlowIpv4Dst.INCREMENT)
                 sai_dp.add_udp_header(flow)
 
             dir_lookup_val += dir_lookup.step
@@ -77,6 +82,7 @@ def scale_vnet_outbound_flows(sai_dp, test_conf: dict, packets_per_flow=1, pps_p
     vip_tup = namedtuple('VIP', 'count start step')
     dir_lookup_tup = namedtuple('DIRECTION_LOOKUP', 'count start step')
     ca_smac_tup = namedtuple('CA_SMAC', 'count start step')
+    ca_sip_tup = namedtuple('CA_SIP', 'count start step')
     ca_dip_tup = namedtuple('CA_DIP', 'count start step')
 
     def dict_helper(named_tup, conf, def_step):
@@ -88,9 +94,10 @@ def scale_vnet_outbound_flows(sai_dp, test_conf: dict, packets_per_flow=1, pps_p
     vip = dict_helper(vip_tup, test_conf['DASH_VIP']['vpe']['IPV4'], "0.0.0.1")
     dir_lookup = dict_helper(dir_lookup_tup, test_conf['DASH_DIRECTION_LOOKUP']['dle']['VNI'], 1)
     ca_smac = dict_helper(ca_smac_tup, test_conf['DASH_ENI_ETHER_ADDRESS_MAP']['eam']['MAC'], "00:00:00:00:00:01")
+    ca_sip = dict_helper(ca_sip_tup, test_conf['DASH_ENI']['eni']['VM_UNDERLAY_DIP'], "0.0.0.1")
     ca_dip = dict_helper(ca_dip_tup, test_conf['DASH_OUTBOUND_CA_TO_PA']['ocpe']['DIP'], "0.0.0.1")
 
-    configure_vnet_outbound_packet_flows(sai_dp, vip, dir_lookup, ca_smac, ca_dip,
+    configure_vnet_outbound_packet_flows(sai_dp, vip, dir_lookup, ca_smac, ca_sip, ca_dip,
                                          pkt_count=packets_per_flow, pps=pps_per_flow, duration=flow_duration)
 
 
