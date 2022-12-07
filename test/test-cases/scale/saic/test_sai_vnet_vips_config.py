@@ -77,12 +77,18 @@ def vip_generate(vip_start=1, a1=192, a2=192, b1=168, b2=168, c1=0, c2=0, d1=1, 
 
 # create 2x2x2x32 = 256 vips
 def get_create_cmds():
+    """ Return a generator (iterable) of create commands
+        Entries generated on the fly.
+    """
     return vip_generate(vip_start=1,a1=192, a2=193, b1=168, b2=169, c1=1,c2=2,d1=1,d2=32)
 
 # remove 2x2x2x32 = 256 vips
 def get_remove_cmds():
-        cleanup_commands = [{'name': vip['name'], 'op': 'remove'} for vip in vip_generate(vip_start=1,a1=192, a2=193, b1=168, b2=169, c1=1,c2=2,d1=1,d2=32)]
-        return reversed(cleanup_commands)
+    """ Return an array of remove commands
+        Entries generated and modifed on the fly; added to array in memory; reversed; then executed.
+    """
+    cleanup_commands = [{'name': vip['name'], 'op': 'remove'} for vip in vip_generate(vip_start=1,a1=192, a2=193, b1=168, b2=169, c1=1,c2=2,d1=1,d2=32)]
+    return reversed(cleanup_commands)
 
 # @pytest.mark.ptf
 # @pytest.mark.snappi
@@ -91,7 +97,6 @@ class TestSaiDashVips:
     @pytest.mark.snappi
     def test_many_vips_create(self, dpu):
         """Verify VIP configuration create
-           array is generated on the fly
         """
         result = [*dpu.process_commands( (get_create_cmds()) )]
         print("\n======= SAI commands RETURN values =======")
@@ -101,7 +106,6 @@ class TestSaiDashVips:
     @pytest.mark.snappi
     def test_many_vips_remove(self, dpu):
         """Verify VIP configuration removal
-           Entries generated and modifed on the fly; added to array in memory; reversed; then executed.
         """
         result = [*dpu.process_commands(get_remove_cmds())]
         # print("\n======= SAI commands RETURN values =======")
