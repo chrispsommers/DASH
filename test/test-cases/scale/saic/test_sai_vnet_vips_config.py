@@ -1,4 +1,6 @@
 # Demonstration of how to generate many config objects with simple generator expressions
+# Run as pytest or standalone script to preview config create/remove objects
+# standalone mode: python3 <this-filename>
 import json
 import time
 from pathlib import Path
@@ -15,7 +17,8 @@ import pytest
 # Constants
 SWITCH_ID = 5
 
-# Below the array is expanded in-place by Python interpreter
+# The example below is not used, it's here for learning purposes.
+# The array is expanded in-place by Python interpreter
 # using "list comprehension." The entire array sits in memory.
 # This is OK for smaller configs and simple loop expressions.
 def vip_inflate(m,n):
@@ -72,6 +75,14 @@ def vip_generate(vip_start=1, a1=192, a2=192, b1=168, b2=168, c1=0, c2=0, d1=1, 
                     v+= 1
     return
 
+# create 2x2x2x32 = 256 vips
+def get_create_cmds():
+    return vip_generate(vip_start=1,a1=192, a2=193, b1=168, b2=169, c1=1,c2=2,d1=1,d2=32)
+
+# remove 2x2x2x32 = 256 vips
+def get_remove_cmds():
+        cleanup_commands = [{'name': vip['name'], 'op': 'remove'} for vip in vip_generate(vip_start=1,a1=192, a2=193, b1=168, b2=169, c1=1,c2=2,d1=1,d2=32)]
+        return reversed(cleanup_commands)
 
 # @pytest.mark.ptf
 # @pytest.mark.snappi
@@ -82,8 +93,7 @@ class TestSaiDashVips:
         """Verify VIP configuration create
            array is generated on the fly
         """
-        # create 2x2x2x32 = 256 vips
-        result = [*dpu.process_commands( (vip_generate(vip_start=1,a1=192, a2=193, b1=168, b2=169, c1=1,c2=2,d1=1,d2=32)) )]
+        result = [*dpu.process_commands( (get_create_cmds()) )]
         print("\n======= SAI commands RETURN values =======")
         pprint(result)
 
@@ -93,10 +103,18 @@ class TestSaiDashVips:
         """Verify VIP configuration removal
            Entries generated and modifed on the fly; added to array in memory; reversed; then executed.
         """
-        # remove 2x2x2x32 = 256 vips
-        cleanup_commands = [{'name': vip['name'], 'op': 'remove'} for vip in vip_generate(vip_start=1,a1=192, a2=193, b1=168, b2=169, c1=1,c2=2,d1=1,d2=32)]
-        cleanup_commands = reversed(cleanup_commands)
-
-        result = [*dpu.process_commands(cleanup_commands)]
+        result = [*dpu.process_commands(get_remove_cmds())]
         # print("\n======= SAI commands RETURN values =======")
         # pprint(result)
+
+if __name__ == '__main__':
+    print("Create commands:")
+    print("================\n")
+    for cmd in get_create_cmds():
+        print(cmd,'\n')
+
+    print("Remove commands:")
+    print("================\n")
+    for cmd in get_remove_cmds():
+        print(cmd,'\n')
+
