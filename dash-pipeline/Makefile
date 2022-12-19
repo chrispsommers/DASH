@@ -620,8 +620,6 @@ DOCKER_RUN_SAI_CHALLENGER_CLIENT=docker run \
 	-v $(SAI_CHALLENGER_PATH):/sai-challenger \
 	-v $(SAI_CHALLENGER_PATH)/../test-cases/scale/saic/:/sai-challenger/dash_tests/scale \
 	-v $(SAI_CHALLENGER_PATH)/../test-cases/functional/saic/:/sai-challenger/dash_tests/functional \
-	-v $(SAI_CHALLENGER_PATH)/../test-cases/run-saic-functional-tests.sh:/sai-challenger/dash_tests/functional/run-saic-functional-tests.sh \
-	-v $(SAI_CHALLENGER_PATH)/../test-cases/run-saic-scale-tests.sh:/sai-challenger/dash_tests/scale/run-saic-scale-tests.sh \
 	-v $(PWD)/../:/dash \
 	--cap-add=NET_ADMIN \
 	--device /dev/net/tun:/dev/net/tun \
@@ -652,14 +650,14 @@ run-saichallenger-functional-tests: deploy-ixiac
 	-w /sai-challenger/dash_tests/functional \
 	$(DOCKER_FLAGS) \
 	$(DOCKER_SAI_CHALLENGER_CLIENT_IMG) \
-	./run-saic-functional-tests.sh --setup=$(SAI_CHALLENGER_SETUP_FILE) $(SAI_CHALLENGER_TEST)
+	./run-tests.sh --setup=$(SAI_CHALLENGER_SETUP_FILE) $(SAI_CHALLENGER_TEST)
 
 run-saichallenger-scale-tests: deploy-ixiac
 	$(DOCKER_RUN_SAI_CHALLENGER_CLIENT) \
 	-w /sai-challenger/dash_tests/scale \
 	$(DOCKER_FLAGS) \
 	$(DOCKER_SAI_CHALLENGER_CLIENT_IMG) \
-	./run-saic-scale-tests.sh --setup=$(SAI_CHALLENGER_SETUP_FILE) $(SAI_CHALLENGER_TEST)
+	./run-tests.sh --setup=$(SAI_CHALLENGER_SETUP_FILE) $(SAI_CHALLENGER_TEST)
 
 ###############################
 # ENVIRONMENT SETUP TARGETS
