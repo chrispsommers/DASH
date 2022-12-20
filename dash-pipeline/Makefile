@@ -620,6 +620,7 @@ DOCKER_RUN_SAI_CHALLENGER_CLIENT=docker run \
 	-v $(SAI_CHALLENGER_PATH):/sai-challenger \
 	-v $(SAI_CHALLENGER_PATH)/../test-cases/scale/saic/:/sai-challenger/dash_tests/scale \
 	-v $(SAI_CHALLENGER_PATH)/../test-cases/functional/saic/:/sai-challenger/dash_tests/functional \
+	-v $(SAI_CHALLENGER_PATH)/../test-cases/utils/:/sai-challenger/dash_tests/utils \
 	-v $(PWD)/../:/dash \
 	--cap-add=NET_ADMIN \
 	--device /dev/net/tun:/dev/net/tun \

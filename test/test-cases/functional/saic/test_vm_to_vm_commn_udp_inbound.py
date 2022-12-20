@@ -3,7 +3,9 @@ from pathlib import Path
 from pprint import pprint
 import time
 import pytest
-from test-cases.utils.snappi_utils import *
+import sys
+sys.path.append("../utils")
+import snappi_utils as su
 
 current_file_dir = Path(__file__).parent
 
@@ -62,8 +64,8 @@ def test_vm_to_vm_commn_udp(confgen, dpu, dataplane, test_type):
 
     # STEP1 : Configure DPU
     with (current_file_dir / 'config_inbound_setup_commands.json').open(mode='r') as config_file:
-        vnet_inbound_setup_commands = json.load(config_file)
-    result = [*dpu.process_commands(vnet_inbound_setup_commands)]
+        setup_commands = json.load(config_file)
+    result = [*dpu.process_commands(setup_commands)]
     print("\n======= SAI commands RETURN values =======\n")
     pprint(result)
 
@@ -161,20 +163,17 @@ def test_vm_to_vm_commn_udp(confgen, dpu, dataplane, test_type):
     res1 = dataplane.check_flow_tx_rx_frames_stats(f1.name)
     res2 = dataplane.check_flow_tx_rx_frames_stats(f2.name)
     print("res1 and res2 is {} {}".format(res1, res2))
-    if not (res1 and res2) :
-        result = False
+
 
     # STEP4 : Cleanup
     dataplane.tearDown()
-    vnet_inbound_cleanup_commands = []
-    for val in vnet_inbound_setup_commands:
-        new_dict = {'name' : val['name'] ,'op': 'remove'}
-        vnet_inbound_cleanup_commands.append(new_dict)
-
-    result = [*dpu.process_commands(vnet_inbound_cleanup_commands)]
-    print("\n======= SAI commands RETURN values =======")
-    pprint(result)
+    cleanup_commands = [{'name' : cmd['name'] ,'op': 'remove'} for cmd in setup_commands]
+    cleanup_commands = reversed(cleanup_commands)
+    results = [*dpu.process_commands(cleanup_commands)]
+    print("\n======= SAI teardown commands RETURN values =======")
+    assert all([x==0 for x in results]), "Teardown Error"
 
     # STEP5 : Print Result of the test
-    print("Final Result : {}".format(result))
-    assert result==False, "Test Vm to Vm communication with UDP flow on {} flow traffic Failed!!".format(test_type)
+    assert res1, "Traffic test failure"
+    assert res2, "Traffic test failure"
+    

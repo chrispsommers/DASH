@@ -4,7 +4,7 @@ from pprint import pprint
 import time
 import pytest
 import sys
-sys.path.append("../../utils")
+sys.path.append("../utils")
 import snappi_utils as su
 
 current_file_dir = Path(__file__).parent
@@ -37,7 +37,7 @@ TEST_TYPES = ["inbound"]
 
 SPEED = "SPEED_100_GBPS"
 TOTALPACKETS = 5
-PPS = 1
+PPS = 10
 TRAFFIC_SLEEP_TIME = (TOTALPACKETS * PPS) + 2 
 PACKET_LENGTH = 128
 ENI_IP = "1.1.0.1"
@@ -59,9 +59,10 @@ def test_vm_to_vm_commn_acl_inbound(confgen, dpu, dataplane, test_type):
     # STEP1 : Configure DPU
     with (current_file_dir / 'config_inbound_setup_commands.json').open(mode='r') as config_file:
         setup_commands = json.load(config_file)
-    result = [*dpu.process_commands(setup_commands)]
-    print("\n======= SAI commands RETURN values =======")
-    pprint(result)
+    results = [*dpu.process_commands(setup_commands)]
+    print("\n======= SAI setup commands RETURN values =======")
+    pprint(results)
+    assert all(results), "Setup error"
 
     # STEP2 : Configure TGEN
     # configure L1 properties on configured ports
@@ -111,25 +112,22 @@ def test_vm_to_vm_commn_acl_inbound(confgen, dpu, dataplane, test_type):
     
     # STEP3 : Verify Traffic
     su.start_traffic(dataplane, f2.name)
-    time.sleep(10)            # TODO check traffic state stopped for fixed packet count
+    time.sleep(3)            # TODO check traffic state stopped for fixed packet count
     dataplane.stop_traffic()
     
     res1 = su.check_flow_tx_rx_frames_stats(dataplane, f2.name)
     print("res1 {}".format(res1))
-    if (res1) :
-        result = False
+    # if (res1) :
+    #     result = False
 
     # STEP4 : Cleanup
     dataplane.tearDown()
-    cleanup_commands = []
-    for val in setup_commands:
-        new_dict = {'name' : val['name'] ,'op': 'remove'}
-        cleanup_commands.append(new_dict)
-
-    result = [*dpu.process_commands(cleanup_commands)]
-    print("\n======= SAI commands RETURN values =======")
-    pprint(result)
+    cleanup_commands = [{'name' : cmd['name'] ,'op': 'remove'} for cmd in setup_commands]
+    cleanup_commands = reversed(cleanup_commands)
+    results = [*dpu.process_commands(cleanup_commands)]
+    print("\n======= SAI teardown commands RETURN values =======")
+    assert all([x==0 for x in results]), "Teardown Error"
 
     # STEP5 : Print Result of the test
-    print("Final Result : {}".format(result))
-    assert result == False, "Test Vm to Vm communication with ACL on {} flow traffic Failed!!".format(test_type)
+    print("Final Result : {}".format(res1))
+    assert res1, "Traffic test failure"

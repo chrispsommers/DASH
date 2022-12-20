@@ -4,6 +4,10 @@ import pytest
 from saichallenger.common.sai_dpu import SaiDpu
 from saichallenger.common.sai_environment import init_setup
 
+import dpugen
+from saigen.confbase import *
+from saigen.confutils import *
+
 def pytest_addoption(parser):
     parser.addoption("--traffic", action="store_true", default=False, help="run tests with traffic")
     parser.addoption("--loglevel", action="store", default='NOTICE', help="syncd logging level")
@@ -37,6 +41,9 @@ def dataplane_session(exec_params):
     # Shutdown the dataplane
     dataplane.remove()
 
+@pytest.fixture(scope="session")
+def confgen():
+    return dpugen.sai.SaiConfig()
 
 @pytest.fixture(scope="function")
 def dataplane(dataplane_session):

@@ -3,7 +3,9 @@ from pathlib import Path
 from pprint import pprint
 import time
 import pytest
-from test-cases.utils.snappi_utils import *
+import sys
+sys.path.append("../utils")
+import snappi_utils as su
 
 current_file_dir = Path(__file__).parent
 
@@ -37,7 +39,7 @@ TEST_TYPES = ["bidirection"]
 SPEED = "SPEED_100_GBPS"
 TOTALPACKETS = 5
 PPS = 1
-TRAFFIC_SLEEP_TIME = (TOTALPACKETS * PPS) + 2 
+TRAFFIC_SLEEP_TIME = (TOTALPACKETS / PPS) + 2 
 PACKET_LENGTH = 128
 ENI_IP = "1.1.0.1"
 NETWORK_IP1 = "1.128.0.1"
@@ -71,7 +73,7 @@ def test_vm_to_vm_commn_udp_bidir(confgen, dpu, dataplane, test_type):
 
     # STEP2 : Configure TGEN
     # configure L1 properties on configured ports
-    config_l1_properties(dataplane, SPEED)
+    su.config_l1_properties(dataplane, SPEED)
     
     # Flow1 settings
     f1 = dataplane.configuration.flows.flow(name="ENI_TO_NETWORK")[-1]
@@ -232,32 +234,32 @@ def test_vm_to_vm_commn_udp_bidir(confgen, dpu, dataplane, test_type):
     dataplane.set_config()
 
     # STEP3 : Verify Traffic
-    start_traffic(dataplane, f1.name)
-    start_traffic(dataplane, f3.name)
+    print ("Starting traffic...")
+    su.start_traffic(dataplane, f1.name)
+    su.start_traffic(dataplane, f3.name)
     time.sleep(0.5)
-    start_traffic(dataplane, f2.name)
-    start_traffic(dataplane, f4.name)
+    su.start_traffic(dataplane, f2.name)
+    su.start_traffic(dataplane, f4.name)
     time.sleep(TRAFFIC_SLEEP_TIME)            
     dataplane.stop_traffic()
-    res1 = check_flow_tx_rx_frames_stats(dataplane, f1.name)
-    res2 = check_flow_tx_rx_frames_stats(dataplane, f2.name)
-    res3 = check_flow_tx_rx_frames_stats(dataplane, f3.name)
-    res4 = check_flow_tx_rx_frames_stats(dataplane, f4.name)
+    print ("Stopping traffic...")
+    res1 = su.check_flow_tx_rx_frames_stats(dataplane, f1.name)
+    res2 = su.check_flow_tx_rx_frames_stats(dataplane, f2.name)
+    res3 = su.check_flow_tx_rx_frames_stats(dataplane, f3.name)
+    res4 = su.check_flow_tx_rx_frames_stats(dataplane, f4.name)
     print("res1 and res2 and res3 and res4 is {} {} {} {}".format(res1, res2, res3, res4))
-    if not (res1 and res2 and res3 and res4) :
-        result = False 
+
 
     # STEP4 : Cleanup
     dataplane.tearDown()
-    cleanup_commands = []
-    for val in setup_commands:
-        new_dict = {'name' : val['name'] ,'op': 'remove'}
-        cleanup_commands.append(new_dict)
+    cleanup_commands = [{'name' : cmd['name'] ,'op': 'remove'} for cmd in setup_commands]
+    cleanup_commands = reversed(cleanup_commands)
 
-    result = [*dpu.process_commands(cleanup_commands)]
-    print("\n======= SAI commands RETURN values =======")
-    pprint(result)
+    results = [*dpu.process_commands(cleanup_commands)]
+    print("\n======= SAI teardown commands RETURN values =======")
+    print (results)
+    assert all([x==0 for x in results]), "Teardown Error"
 
     # STEP5 : Print Result of the test
     print("Final Result : {}".format(result))
-    assert result == False, "Test Vm to Vm communication with UDP flow on {} flow traffic Failed!!".format(test_type)
+    assert all([res1,res2,res3,res4]), "Traffic Failure"
