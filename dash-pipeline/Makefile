@@ -126,8 +126,14 @@ P4_DPDK_OUTDIR=dpdk-pna/dash_pipeline.dpdk
 # -DDPDK_PNA_SEND_TO_PORT_FIX_MERGED
 # -DDPDK_SUPPORTS_DIRECT_COUNTER_ON_WILDCARD_KEY_TABLE
 
+# [cs] If you do this, it complains it can't find "arch_specific.p4"
+#P4_MAIN_DPDK=dpdk-pna/dash_pipeline.p4
+
+# We want to compile from single code base:
+P4_MAIN_DPDK=$(P4_MAIN)
+
 p4c-dpdk-pna:
-	@echo "Compile P4 program $(P4_MAIN) for dpdk-pna ..."
+	@echo "Compile P4 program $(P4_MAIN_DPDK) for dpdk-pna ..."
 	mkdir -p $(P4_DPDK_OUTDIR) && \
 	chmod o+w $(P4_DPDK_OUTDIR) && \
 	docker run \
@@ -141,7 +147,7 @@ p4c-dpdk-pna:
 	$(DOCKER_P4C_DPDK_IMG)  \
 	p4c-dpdk -DDPDK_PNA -DPNA_CONNTRACK --dump $(P4_DPDK_OUTDIR) --pp $(P4_DPDK_OUTDIR)/dash_pipeline.pp.p4 \
 	-o $(P4_DPDK_OUTDIR)/dash_pipeline.spec --arch pna --bf-rt-schema $(P4_DPDK_OUTDIR)/dash_pipeline.p4.bfrt.json \
-	--p4runtime-files $(P4_DPDK_OUTDIR)/dash_pipeline.p4.p4info.txt $(P4_MAIN)
+	--p4runtime-files $(P4_DPDK_OUTDIR)/dash_pipeline.p4.p4info.txt $(P4_MAIN_DPDK)
 
 ######################################
 # DASH SAI HEADER & libsai.so TARGETS
