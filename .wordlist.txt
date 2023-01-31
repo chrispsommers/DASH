@@ -481,6 +481,7 @@ SAIRPC
 sairpcserver
 saiserver
 saithrift
+saivisor
 sata
 scalability
 scalable
