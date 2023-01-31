@@ -47,9 +47,7 @@ RUN wget http://archive.apache.org/dist/thrift/0.11.0/thrift-0.11.0.tar.gz && \
     cd / && \
     rm -rf thrift-0.11.0 thrift-0.11.0.tar.gz
 
-# TODO - merge into first RUN layer (or delete?) this is for dev only
-RUN sudo apt install -y gdb
-RUN sudo apt install -y binutils systemtap-sdt-dev bpfcc-tools bpftrace linux-tools-common
+RUN sudo apt install -y gdb binutils systemtap-sdt-dev bpfcc-tools bpftrace linux-tools-common
 
 # Used to make saithrift server
 COPY --from=grpc /usr/local/lib/lib*grpc*.so* \
