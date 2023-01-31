@@ -56,6 +56,7 @@ bmv
 BMv
 bootup
 Bootup
+bpftrace
 br
 breakpoint
 Bringup
@@ -186,6 +187,7 @@ DroppedResourcesUnifiedFlow
 DSC
 DSCP
 dst
+DTRACE
 DuringPortTimer
 DUT
 dut
@@ -193,6 +195,7 @@ DUTs
 DUTS
 DUT's
 EasyCLA
+eBPF
 ECMP
 encap
 ENI
@@ -475,6 +478,7 @@ saichallenger
 saigen
 sairedis
 SAIRPC
+sairpcserver
 saiserver
 saithrift
 sata
@@ -605,6 +609,8 @@ Unpair
 untracked
 upcasting
 upstreaming
+usdt
+USDT
 utils
 vcpus
 veth
