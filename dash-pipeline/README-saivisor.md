@@ -95,13 +95,19 @@ chris@chris-z4:~/chris-DASH/DASH/dash-pipeline$ readelf -n SAI/rpc/usr/sbin/sais
     Name: get_vnet_attribute_fn
     Name: get_vnet_attribute_ret
 ```
-Examine all SAI tracepoints (omit final `|wc` to see them)
+Examine all SAI tracepoints (1048 entries at this writing):
 ```
-chris@chris-z4:~/chris-DASH/DASH/dash-pipeline$ readelf -n SAI/rpc/usr/sbin/saiserver |grep -A1 saivisor|grep Name|wc
-   1048    2096   39192
+chris@chris-z4:~/chris-DASH/DASH/dash-pipeline$ readelf -n SAI/rpc/usr/sbin/saiserver |grep -A1 saivisor|grep Name
+    Name: create_acl_table_fn
+    Name: create_acl_table_ret
+    Name: remove_acl_table_fn
+    Name: remove_acl_table_ret
+...
+    Name: set_wred_attribute_fn
+    Name: set_wred_attribute_ret
+    Name: get_wred_attribute_fn
+    Name: get_wred_attribute_ret
 ```
-
-chris@chris-z4:~/chris-DASH/DASH/dash-pipeline$ readelf -n SAI/rpc/usr/sbin/saiserver |grep -A1 saivisor|grep Name|egrep '(dash|vnet|eni|inbound|outbound|pavalid|vip|direction_lookup)'
 
 # Use bpftrace to list usdt probes in running saithrift-server
 ```
@@ -112,7 +118,7 @@ root@chris-z4:/home/chris/chris-DASH/DASH/dash-pipeline# find /proc/`pidof saise
 /proc/1165426/root/SAI/SAI/test/saithriftv2/saiserver
 /proc/1165426/root/SAI/rpc/usr/sbin/saiserver
 
-root@chris-z4:/home/chris/chris-DASH/DASH/dash-pipeline# bpftrace -l 'usdt:/proc/1165426/root/SAI/SAI/test/saithriftv2/saiserver'|egrep '(dash|vnet|eni|inbound|outbound|pavalid|vip|directionlookip)'
+root@chris-z4:/home/chris/chris-DASH/DASH/dash-pipeline# bpftrace -l 'usdt:/proc/1165426/root/SAI/SAI/test/saithriftv2/saiserver'|egrep '(dash|vnet|eni|inbound|outbound|pavalid|vip|direction_lookup)'
 usdt:/proc/1165426/root/SAI/SAI/test/saithriftv2/saiserver:saivisor:sai_create_dash_acl_group_fn
 usdt:/proc/1165426/root/SAI/SAI/test/saithriftv2/saiserver:saivisor:sai_create_dash_acl_group_ret
 usdt:/proc/1165426/root/SAI/SAI/test/saithriftv2/saiserver:saivisor:sai_remove_dash_acl_group_fn
