@@ -7,6 +7,7 @@ RPC_INST_DIR=$(shell pwd)/../rpc
 
 META=../SAI/meta
 
+SAIRPC_EXTRA_FLAGS?=-DSAI_PROBE_PER_API_NO_PARAMS=1
 SAIRPC_VENDOR_EXTRA_LIBS?=
 SAIRPC_EXTRA_LIBS= "$(SAIRPC_VENDOR_EXTRA_LIBS) \
 		-L/lib/x86_64-linux-gnu -Wl,-rpath=/lib/x86_64-linux-gnu -lm \
@@ -51,6 +52,7 @@ saithrift-server:
 	cd $(SAI) && export SAITHRIFTV2=y && \
 		export GEN_SAIRPC_OPTS="-ve" && \
 		export SAIRPC_EXTRA_LIBS=$(SAIRPC_EXTRA_LIBS) && \
+		export SAIRPC_EXTRA_FLAGS=$(SAIRPC_EXTRA_FLAGS) && \
 		make saithrift-build && \
 		export DESTDIR=$(RPC_INST_DIR) && make saithrift-install
 
