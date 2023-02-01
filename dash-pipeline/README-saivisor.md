@@ -10,6 +10,17 @@ Add packages: `binutils` (for `readelf`) and `systemtap-sdt-dev` (for `<sys/sdt.
 ```
 chris@chris-z4:~/chris-DASH/DASH/dash-pipeline$ make [p4 sai] saithrift-server
 ```
+## saithrift server code generator developer hints
+The saithriftv2 code generator lives inside the OCP SAI repo which appears in DASH repo as `dash-pipeline/SAI/SAI` (as a git submodule). It's a Perl template-based codegen. The location us under the SAI `meta/` directory.
+
+To develop perl codegen templates without rebuilding entire saithrift server each time (slow):
+```
+make run-saithrift-server-bash
+cd /SAI/SAI/meta
+perl -Irpc gensairpc.pl -ve
+```
+Then examine resulting `sai_rpc_server.cpp`; if OK, then exit & `make docker-saithrift-bldr saithrift-server`
+
 # Examine elf file for generated sairpcserver
 Examine DASH SAI tracepoints:
 ```
