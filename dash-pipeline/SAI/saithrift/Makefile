@@ -61,7 +61,7 @@ saithrift-server:
 	# NOTE: commands below is a workaround (WA) and needed until packaging of SAI python is fixed.
 	# Re-generate python SAI thrift library again
 
-	# cd $(SAI)/test/saithriftv2 && export DESTDIR=$(RPC_INST_DIR) && make install-pylib
+	cd $(SAI)/test/saithriftv2 && export DESTDIR=$(RPC_INST_DIR) && make install-pylib
 	# Copy auto-generated python SAI thrift library to your Test controller host.
 	cp $(SAI)/test/saithriftv2/dist/saithrift-0.9.tar.gz $(RPC_INST_DIR)
 
