@@ -18,7 +18,7 @@ import pytest
 # Constants
 SWITCH_ID = 5
 
-# create vips
+# create vnets
 def make_create_cmds():
     """ Return some configuration entries expressed literally"""
     return [
