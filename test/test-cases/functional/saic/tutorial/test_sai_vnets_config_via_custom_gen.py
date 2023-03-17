@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-# Demonstration of how to generate many config objects with simple generator expressions
+# Demonstration of how to generate many config objects with a custom generator
 # Run as pytest or standalone script:
 # - as a Pytest, run using the appropriate SAI Challenger setup file, e.g:
 #      pytest -sv --setup ../sai_dpu_client_server_snappi.json .
 #
-# - in standalone mode, use to generate JSON to stdout, which can be saved to a file or pasted as literal
+# - in standalone mode, use to generate JSON to stdout, which can be saved to a file
 #    content into a test-case. Example:
 #    python3 <this-filename> [options]  (use -h for help)
 
@@ -18,37 +18,21 @@ import pytest
 # Constants
 SWITCH_ID = 5
 
-# create 16 vips
+# create vips
 def make_create_cmds():
-    """ Return some configuration entries expressed literally"""
-    return [
-        {
-            "name": "vip_entry#1",
-            "op": "create",
-            "type": "SAI_OBJECT_TYPE_VIP_ENTRY",
-            "key": {
-            "switch_id": "$SWITCH_ID",
-            "vip": "192.168.0.1"
-            },
-            "attributes": [
-            "SAI_VIP_ENTRY_ATTR_ACTION",
-            "SAI_VIP_ENTRY_ACTION_ACCEPT"
-            ]
-        },
-        {
-            "name": "vip_entry#2",
-            "op": "create",
-            "type": "SAI_OBJECT_TYPE_VIP_ENTRY",
-            "key": {
-            "switch_id": "$SWITCH_ID",
-            "vip": "192.168.0.2"
-            },
-            "attributes": [
-            "SAI_VIP_ENTRY_ATTR_ACTION",
-            "SAI_VIP_ENTRY_ACTION_ACCEPT"
-            ]
-        } 
-        ]
+    """ Return some configuration entries using custom generator"""
+    for x in range(1,101):
+        yield \
+            {
+                "name": "vnet%d" % x,
+                "op": "create",
+                "type": "SAI_OBJECT_TYPE_VNET",
+                "attributes": [
+                    "SAI_VNET_ATTR_VNI",
+                    "%d" % (x + 2000)
+                ]
+            } 
+    
 
 def make_remove_cmds():
     """ Return an array of remove commands """
@@ -57,11 +41,11 @@ def make_remove_cmds():
         yield cmd
     return
 
-class TestSaiDashVipsLiteral:
+class TestSaiDashVnetsGenerator:
     @pytest.mark.ptf
     @pytest.mark.snappi
-    def test_many_vips_create_via_literal(self, dpu):
-        """Verify VIP configuration create
+    def test_many_vnets_create_via_generator(self, dpu):
+        """Verify configuration create
         """
         results = [*dpu.process_commands( (make_create_cmds()) )]
         print("\n======= SAI commands RETURN values =======")
@@ -70,8 +54,8 @@ class TestSaiDashVipsLiteral:
 
     @pytest.mark.ptf
     @pytest.mark.snappi
-    def test_many_vips_remove_via_literal(self, dpu):
-        """Verify VIP configuration removal
+    def test_many_vnets_remove_via_generator(self, dpu):
+        """Verify configuration removal
         """
         results = [*dpu.process_commands(make_remove_cmds())]
         print("\n======= SAI commands RETURN values =======")
@@ -79,7 +63,7 @@ class TestSaiDashVipsLiteral:
         print(results)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='DASH SAI Config Generator for vip table entries')
+    parser = argparse.ArgumentParser(description='DASH SAI Config Generator for vnet table entries')
     parser.add_argument('-a', action='store_true', help='Generate ALL commands as JSON to stdout')
     parser.add_argument('-c', action='store_true', help='Generate CREATE commands as JSON to stdout')
     parser.add_argument('-r', action='store_true', help='Generate REMOVE commands as JSON to stdout')

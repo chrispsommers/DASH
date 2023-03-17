@@ -26,20 +26,18 @@ import pytest
 
 current_file_dir = Path(__file__).parent
 
-def test_sai_vnet_vips_config_create_file(dpu):
-
-    with (current_file_dir / f'test_sai_vnet_vips_config_via_custom_gen_create.json').open(mode='r') as config_file:
+def test_sai_vnets_config_create_file(dpu):
+    with (current_file_dir / f'test_sai_vnets_config_via_files_create.json').open(mode='r') as config_file:
         setup_commands = json.load(config_file)
         results = [*dpu.process_commands(setup_commands)]
         print("\n======= SAI commands RETURN values =======")
-        pprint(results)
+        print(results)
         assert all(results), "Create error"
 
 def test_sai_vnet_outbound_small_scale_config_remove_file(dpu):
-
-    with (current_file_dir / f'test_sai_vnet_vips_config_via_custom_gen_remove.json').open(mode='r') as config_file:
+    with (current_file_dir / f'test_sai_vnets_config_via_files_remove.json').open(mode='r') as config_file:
         teardown_commands = json.load(config_file)
         results = [*dpu.process_commands(teardown_commands)]
         print("\n======= SAI commands RETURN values =======")
-        assert all( [result == 0 for result in results]), "Remove error"
         print(results)
+        assert all( [result == 0 for result in results]), "Remove error"

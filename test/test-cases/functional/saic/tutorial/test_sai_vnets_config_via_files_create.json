@@ -1,0 +1,902 @@
+[
+  {
+    "name": "vnet1",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2001"
+    ]
+  },
+  {
+    "name": "vnet2",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2002"
+    ]
+  },
+  {
+    "name": "vnet3",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2003"
+    ]
+  },
+  {
+    "name": "vnet4",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2004"
+    ]
+  },
+  {
+    "name": "vnet5",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2005"
+    ]
+  },
+  {
+    "name": "vnet6",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2006"
+    ]
+  },
+  {
+    "name": "vnet7",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2007"
+    ]
+  },
+  {
+    "name": "vnet8",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2008"
+    ]
+  },
+  {
+    "name": "vnet9",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2009"
+    ]
+  },
+  {
+    "name": "vnet10",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2010"
+    ]
+  },
+  {
+    "name": "vnet11",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2011"
+    ]
+  },
+  {
+    "name": "vnet12",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2012"
+    ]
+  },
+  {
+    "name": "vnet13",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2013"
+    ]
+  },
+  {
+    "name": "vnet14",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2014"
+    ]
+  },
+  {
+    "name": "vnet15",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2015"
+    ]
+  },
+  {
+    "name": "vnet16",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2016"
+    ]
+  },
+  {
+    "name": "vnet17",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2017"
+    ]
+  },
+  {
+    "name": "vnet18",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2018"
+    ]
+  },
+  {
+    "name": "vnet19",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2019"
+    ]
+  },
+  {
+    "name": "vnet20",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2020"
+    ]
+  },
+  {
+    "name": "vnet21",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2021"
+    ]
+  },
+  {
+    "name": "vnet22",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2022"
+    ]
+  },
+  {
+    "name": "vnet23",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2023"
+    ]
+  },
+  {
+    "name": "vnet24",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2024"
+    ]
+  },
+  {
+    "name": "vnet25",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2025"
+    ]
+  },
+  {
+    "name": "vnet26",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2026"
+    ]
+  },
+  {
+    "name": "vnet27",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2027"
+    ]
+  },
+  {
+    "name": "vnet28",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2028"
+    ]
+  },
+  {
+    "name": "vnet29",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2029"
+    ]
+  },
+  {
+    "name": "vnet30",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2030"
+    ]
+  },
+  {
+    "name": "vnet31",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2031"
+    ]
+  },
+  {
+    "name": "vnet32",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2032"
+    ]
+  },
+  {
+    "name": "vnet33",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2033"
+    ]
+  },
+  {
+    "name": "vnet34",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2034"
+    ]
+  },
+  {
+    "name": "vnet35",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2035"
+    ]
+  },
+  {
+    "name": "vnet36",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2036"
+    ]
+  },
+  {
+    "name": "vnet37",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2037"
+    ]
+  },
+  {
+    "name": "vnet38",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2038"
+    ]
+  },
+  {
+    "name": "vnet39",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2039"
+    ]
+  },
+  {
+    "name": "vnet40",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2040"
+    ]
+  },
+  {
+    "name": "vnet41",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2041"
+    ]
+  },
+  {
+    "name": "vnet42",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2042"
+    ]
+  },
+  {
+    "name": "vnet43",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2043"
+    ]
+  },
+  {
+    "name": "vnet44",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2044"
+    ]
+  },
+  {
+    "name": "vnet45",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2045"
+    ]
+  },
+  {
+    "name": "vnet46",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2046"
+    ]
+  },
+  {
+    "name": "vnet47",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2047"
+    ]
+  },
+  {
+    "name": "vnet48",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2048"
+    ]
+  },
+  {
+    "name": "vnet49",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2049"
+    ]
+  },
+  {
+    "name": "vnet50",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2050"
+    ]
+  },
+  {
+    "name": "vnet51",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2051"
+    ]
+  },
+  {
+    "name": "vnet52",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2052"
+    ]
+  },
+  {
+    "name": "vnet53",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2053"
+    ]
+  },
+  {
+    "name": "vnet54",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2054"
+    ]
+  },
+  {
+    "name": "vnet55",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2055"
+    ]
+  },
+  {
+    "name": "vnet56",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2056"
+    ]
+  },
+  {
+    "name": "vnet57",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2057"
+    ]
+  },
+  {
+    "name": "vnet58",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2058"
+    ]
+  },
+  {
+    "name": "vnet59",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2059"
+    ]
+  },
+  {
+    "name": "vnet60",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2060"
+    ]
+  },
+  {
+    "name": "vnet61",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2061"
+    ]
+  },
+  {
+    "name": "vnet62",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2062"
+    ]
+  },
+  {
+    "name": "vnet63",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2063"
+    ]
+  },
+  {
+    "name": "vnet64",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2064"
+    ]
+  },
+  {
+    "name": "vnet65",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2065"
+    ]
+  },
+  {
+    "name": "vnet66",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2066"
+    ]
+  },
+  {
+    "name": "vnet67",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2067"
+    ]
+  },
+  {
+    "name": "vnet68",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2068"
+    ]
+  },
+  {
+    "name": "vnet69",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2069"
+    ]
+  },
+  {
+    "name": "vnet70",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2070"
+    ]
+  },
+  {
+    "name": "vnet71",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2071"
+    ]
+  },
+  {
+    "name": "vnet72",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2072"
+    ]
+  },
+  {
+    "name": "vnet73",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2073"
+    ]
+  },
+  {
+    "name": "vnet74",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2074"
+    ]
+  },
+  {
+    "name": "vnet75",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2075"
+    ]
+  },
+  {
+    "name": "vnet76",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2076"
+    ]
+  },
+  {
+    "name": "vnet77",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2077"
+    ]
+  },
+  {
+    "name": "vnet78",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2078"
+    ]
+  },
+  {
+    "name": "vnet79",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2079"
+    ]
+  },
+  {
+    "name": "vnet80",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2080"
+    ]
+  },
+  {
+    "name": "vnet81",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2081"
+    ]
+  },
+  {
+    "name": "vnet82",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2082"
+    ]
+  },
+  {
+    "name": "vnet83",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2083"
+    ]
+  },
+  {
+    "name": "vnet84",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2084"
+    ]
+  },
+  {
+    "name": "vnet85",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2085"
+    ]
+  },
+  {
+    "name": "vnet86",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2086"
+    ]
+  },
+  {
+    "name": "vnet87",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2087"
+    ]
+  },
+  {
+    "name": "vnet88",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2088"
+    ]
+  },
+  {
+    "name": "vnet89",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2089"
+    ]
+  },
+  {
+    "name": "vnet90",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2090"
+    ]
+  },
+  {
+    "name": "vnet91",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2091"
+    ]
+  },
+  {
+    "name": "vnet92",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2092"
+    ]
+  },
+  {
+    "name": "vnet93",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2093"
+    ]
+  },
+  {
+    "name": "vnet94",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2094"
+    ]
+  },
+  {
+    "name": "vnet95",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2095"
+    ]
+  },
+  {
+    "name": "vnet96",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2096"
+    ]
+  },
+  {
+    "name": "vnet97",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2097"
+    ]
+  },
+  {
+    "name": "vnet98",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2098"
+    ]
+  },
+  {
+    "name": "vnet99",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2099"
+    ]
+  },
+  {
+    "name": "vnet100",
+    "op": "create",
+    "type": "SAI_OBJECT_TYPE_VNET",
+    "attributes": [
+      "SAI_VNET_ATTR_VNI",
+      "2100"
+    ]
+  }
+]

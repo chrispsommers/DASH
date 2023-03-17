@@ -1,0 +1,402 @@
+[
+  {
+    "name": "vnet100",
+    "op": "remove"
+  },
+  {
+    "name": "vnet99",
+    "op": "remove"
+  },
+  {
+    "name": "vnet98",
+    "op": "remove"
+  },
+  {
+    "name": "vnet97",
+    "op": "remove"
+  },
+  {
+    "name": "vnet96",
+    "op": "remove"
+  },
+  {
+    "name": "vnet95",
+    "op": "remove"
+  },
+  {
+    "name": "vnet94",
+    "op": "remove"
+  },
+  {
+    "name": "vnet93",
+    "op": "remove"
+  },
+  {
+    "name": "vnet92",
+    "op": "remove"
+  },
+  {
+    "name": "vnet91",
+    "op": "remove"
+  },
+  {
+    "name": "vnet90",
+    "op": "remove"
+  },
+  {
+    "name": "vnet89",
+    "op": "remove"
+  },
+  {
+    "name": "vnet88",
+    "op": "remove"
+  },
+  {
+    "name": "vnet87",
+    "op": "remove"
+  },
+  {
+    "name": "vnet86",
+    "op": "remove"
+  },
+  {
+    "name": "vnet85",
+    "op": "remove"
+  },
+  {
+    "name": "vnet84",
+    "op": "remove"
+  },
+  {
+    "name": "vnet83",
+    "op": "remove"
+  },
+  {
+    "name": "vnet82",
+    "op": "remove"
+  },
+  {
+    "name": "vnet81",
+    "op": "remove"
+  },
+  {
+    "name": "vnet80",
+    "op": "remove"
+  },
+  {
+    "name": "vnet79",
+    "op": "remove"
+  },
+  {
+    "name": "vnet78",
+    "op": "remove"
+  },
+  {
+    "name": "vnet77",
+    "op": "remove"
+  },
+  {
+    "name": "vnet76",
+    "op": "remove"
+  },
+  {
+    "name": "vnet75",
+    "op": "remove"
+  },
+  {
+    "name": "vnet74",
+    "op": "remove"
+  },
+  {
+    "name": "vnet73",
+    "op": "remove"
+  },
+  {
+    "name": "vnet72",
+    "op": "remove"
+  },
+  {
+    "name": "vnet71",
+    "op": "remove"
+  },
+  {
+    "name": "vnet70",
+    "op": "remove"
+  },
+  {
+    "name": "vnet69",
+    "op": "remove"
+  },
+  {
+    "name": "vnet68",
+    "op": "remove"
+  },
+  {
+    "name": "vnet67",
+    "op": "remove"
+  },
+  {
+    "name": "vnet66",
+    "op": "remove"
+  },
+  {
+    "name": "vnet65",
+    "op": "remove"
+  },
+  {
+    "name": "vnet64",
+    "op": "remove"
+  },
+  {
+    "name": "vnet63",
+    "op": "remove"
+  },
+  {
+    "name": "vnet62",
+    "op": "remove"
+  },
+  {
+    "name": "vnet61",
+    "op": "remove"
+  },
+  {
+    "name": "vnet60",
+    "op": "remove"
+  },
+  {
+    "name": "vnet59",
+    "op": "remove"
+  },
+  {
+    "name": "vnet58",
+    "op": "remove"
+  },
+  {
+    "name": "vnet57",
+    "op": "remove"
+  },
+  {
+    "name": "vnet56",
+    "op": "remove"
+  },
+  {
+    "name": "vnet55",
+    "op": "remove"
+  },
+  {
+    "name": "vnet54",
+    "op": "remove"
+  },
+  {
+    "name": "vnet53",
+    "op": "remove"
+  },
+  {
+    "name": "vnet52",
+    "op": "remove"
+  },
+  {
+    "name": "vnet51",
+    "op": "remove"
+  },
+  {
+    "name": "vnet50",
+    "op": "remove"
+  },
+  {
+    "name": "vnet49",
+    "op": "remove"
+  },
+  {
+    "name": "vnet48",
+    "op": "remove"
+  },
+  {
+    "name": "vnet47",
+    "op": "remove"
+  },
+  {
+    "name": "vnet46",
+    "op": "remove"
+  },
+  {
+    "name": "vnet45",
+    "op": "remove"
+  },
+  {
+    "name": "vnet44",
+    "op": "remove"
+  },
+  {
+    "name": "vnet43",
+    "op": "remove"
+  },
+  {
+    "name": "vnet42",
+    "op": "remove"
+  },
+  {
+    "name": "vnet41",
+    "op": "remove"
+  },
+  {
+    "name": "vnet40",
+    "op": "remove"
+  },
+  {
+    "name": "vnet39",
+    "op": "remove"
+  },
+  {
+    "name": "vnet38",
+    "op": "remove"
+  },
+  {
+    "name": "vnet37",
+    "op": "remove"
+  },
+  {
+    "name": "vnet36",
+    "op": "remove"
+  },
+  {
+    "name": "vnet35",
+    "op": "remove"
+  },
+  {
+    "name": "vnet34",
+    "op": "remove"
+  },
+  {
+    "name": "vnet33",
+    "op": "remove"
+  },
+  {
+    "name": "vnet32",
+    "op": "remove"
+  },
+  {
+    "name": "vnet31",
+    "op": "remove"
+  },
+  {
+    "name": "vnet30",
+    "op": "remove"
+  },
+  {
+    "name": "vnet29",
+    "op": "remove"
+  },
+  {
+    "name": "vnet28",
+    "op": "remove"
+  },
+  {
+    "name": "vnet27",
+    "op": "remove"
+  },
+  {
+    "name": "vnet26",
+    "op": "remove"
+  },
+  {
+    "name": "vnet25",
+    "op": "remove"
+  },
+  {
+    "name": "vnet24",
+    "op": "remove"
+  },
+  {
+    "name": "vnet23",
+    "op": "remove"
+  },
+  {
+    "name": "vnet22",
+    "op": "remove"
+  },
+  {
+    "name": "vnet21",
+    "op": "remove"
+  },
+  {
+    "name": "vnet20",
+    "op": "remove"
+  },
+  {
+    "name": "vnet19",
+    "op": "remove"
+  },
+  {
+    "name": "vnet18",
+    "op": "remove"
+  },
+  {
+    "name": "vnet17",
+    "op": "remove"
+  },
+  {
+    "name": "vnet16",
+    "op": "remove"
+  },
+  {
+    "name": "vnet15",
+    "op": "remove"
+  },
+  {
+    "name": "vnet14",
+    "op": "remove"
+  },
+  {
+    "name": "vnet13",
+    "op": "remove"
+  },
+  {
+    "name": "vnet12",
+    "op": "remove"
+  },
+  {
+    "name": "vnet11",
+    "op": "remove"
+  },
+  {
+    "name": "vnet10",
+    "op": "remove"
+  },
+  {
+    "name": "vnet9",
+    "op": "remove"
+  },
+  {
+    "name": "vnet8",
+    "op": "remove"
+  },
+  {
+    "name": "vnet7",
+    "op": "remove"
+  },
+  {
+    "name": "vnet6",
+    "op": "remove"
+  },
+  {
+    "name": "vnet5",
+    "op": "remove"
+  },
+  {
+    "name": "vnet4",
+    "op": "remove"
+  },
+  {
+    "name": "vnet3",
+    "op": "remove"
+  },
+  {
+    "name": "vnet2",
+    "op": "remove"
+  },
+  {
+    "name": "vnet1",
+    "op": "remove"
+  }
+]
