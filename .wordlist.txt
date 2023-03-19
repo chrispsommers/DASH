@@ -197,6 +197,7 @@ ECMP
 encap
 ENI
 eni
+enis
 Eni
 ENIs
 ENI's
@@ -627,6 +628,7 @@ VMtoVM
 VMtoVMloadBalancer
 VNET
 vnet
+vnets
 VNETs
 VNET's
 vni
