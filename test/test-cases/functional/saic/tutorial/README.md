@@ -208,7 +208,7 @@ The commands used to create the files are as follows:
 The test case code to apply the create and remove commands consists merely of reading JSON into a variable, and feeding that variable (an array of SAI records) to the `process_commands()` method. We explain this technique in [Pattern: reading JSON config files and applying them](#pattern-reading-json-config-files-and-applying-them).
 
 ## [test_sai_vnets_config_via_custom_gen.py](test_sai_vnets_config_via_custom_gen.py)
-This test-case illustrates how to write a custom config "generator" which uses the Python `yield` command to emit a series of "SAI records" via an iterator. The custom config generator generates the exact same VNIs as the examples above, but we demonstrate the generator syntax which uses the `yield` keyword, see below:
+This test-case illustrates how to write a custom config "generator" which uses the Python `yield` command to emit a series of "SAI records" via an iterator. The custom config generator generates the exact same vnis as the examples above, but we demonstrate the generator syntax which uses the `yield` keyword, see below:
 ```
 def make_create_cmds():
     """ Return some configuration entries using custom generator"""
@@ -252,16 +252,16 @@ where `make_remove_cmds()` again is a simple method which we explain in [Pattern
 
 ## [test_sai_enis_config_via_custom_gen.py](test_sai_enis_config_via_custom_gen.py)
 This test-case illustrates two concepts at once:
-- how to write a custom config "generator" which uses the Python `yield` command to emit a series of "SAI records" via an iterator. For more on this topc, see the [test\_sai\_vnets\_config\_via\_custom\_gen.py](#test_sai_vnets_config_via_custom_genpy) example above.
+- How to write a custom config "generator" which uses the Python `yield` command to emit a series of "SAI records" via an iterator. For more on this topc, see the [test\_sai\_vnets\_config\_via\_custom\_gen.py](#test_sai_vnets_config_via_custom_genpy) example above.
 - How to cache a created object's handle (keys or OID) and use it by reference in a subsequent object Create command.
 
-In this case, the object creation order and dependendencies is as follows:
+In this case, the object creation order and dependencies is as follows:
 ```
 create VNET -> create ENI -> create ENI Ethernet Address Map
 ```
-ENIs depend upon a previously-created VNET and ENI Ethernet Address Maps depend upon a previously-created ENI.
+ENIs depend upon a previously-created VNET; similarly,  ENI Ethernet Address Maps depend upon a previously-created ENI.
 
-We'll just focus on a few important snippets of the code.
+We'll just focus on a few important snippets of the code. 
 
 Below, we generate create commands for a sequence of VNET objects and assign a name for them. We saw code like this in a previous example:
 ```
@@ -295,7 +295,7 @@ Next, we create an ENI object. One of its attributes is the OID of the previousl
                     "$vnet_#%d" % (ENI_BASE + n*ENI_STEP),
                     ...
 ```
-Finally, we create an SAI_OBJECT_TYPE_ENI_ETHER_ADDRESS_MAP_ENTRY:
+Finally, we create an SAI_OBJECT_TYPE_ENI_ETHER_ADDRESS_MAP_ENTRY which needs an ENI reference as an attribute:
 ```
         yield \
             {
