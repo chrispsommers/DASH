@@ -21,84 +21,108 @@ SWITCH_ID = 5
 VNI_BASE = 5000
 VNI_STEP = 1000
 
-# create enis
+ENI_BASE = 5000
+ENI_STEP = 1000
+num_entries = 10
+
 def make_create_cmds():
     """ Return some configuration entries using custom generator"""
-    for x in range(1,11):
+    for n in range(1,num_entries+1):
 
         yield \
-                {
-                    "name": "vnet_#%d" % (VNI_BASE + x*VNI_STEP),
-                    "op": "create",
-                    "type": "SAI_OBJECT_TYPE_VNET",
-                    "attributes": [
-                    "SAI_VNET_ATTR_VNI",
-                    "%d" % (VNI_BASE + x*VNI_STEP)
-                    ]
-                }
+            {
+                # NOTE we'll use reference below in subsquent dependent object
+                "name": "vnet_#%d" % (VNI_BASE + n*VNI_STEP),
+                "op": "create",
+                "type": "SAI_OBJECT_TYPE_VNET",
+                "attributes": [
+                "SAI_VNET_ATTR_VNI",
+                "%d" % (VNI_BASE + n*VNI_STEP)
+                ]
+            }
         
         yield \
-          {
-            "name": "eni_#%d" % (VNI_BASE + x*VNI_STEP),
-            "op": "create",
-            "type": "SAI_OBJECT_TYPE_ENI",
-            "attributes": [
-            "SAI_ENI_ATTR_CPS",
-            "10000",
-            "SAI_ENI_ATTR_PPS",
-            "100000",
-            "SAI_ENI_ATTR_FLOWS",
-            "100000",
-            "SAI_ENI_ATTR_ADMIN_STATE",
-            "True",
-            "SAI_ENI_ATTR_VM_UNDERLAY_DIP",
-            "221.0.1.1",
-            "SAI_ENI_ATTR_VM_VNI",
-            "%d" % (VNI_BASE + x*VNI_STEP),
-            "SAI_ENI_ATTR_VNET_ID",
-            "$vnet_#%d" % (VNI_BASE + x*VNI_STEP),
-            "SAI_ENI_ATTR_INBOUND_V4_STAGE1_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_INBOUND_V4_STAGE2_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_INBOUND_V4_STAGE3_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_INBOUND_V4_STAGE4_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_INBOUND_V4_STAGE5_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_INBOUND_V6_STAGE1_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_INBOUND_V6_STAGE2_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_INBOUND_V6_STAGE3_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_INBOUND_V6_STAGE4_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_INBOUND_V6_STAGE5_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_OUTBOUND_V4_STAGE1_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_OUTBOUND_V4_STAGE2_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_OUTBOUND_V4_STAGE3_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_OUTBOUND_V4_STAGE4_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_OUTBOUND_V4_STAGE5_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_OUTBOUND_V6_STAGE1_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_OUTBOUND_V6_STAGE2_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_OUTBOUND_V6_STAGE3_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_OUTBOUND_V6_STAGE4_DASH_ACL_GROUP_ID",
-            "0",
-            "SAI_ENI_ATTR_OUTBOUND_V6_STAGE5_DASH_ACL_GROUP_ID",
-            "0"
-            ]
-        }
+            {
+                # NOTE we'll use reference below in subsequent dependent object
+                "name": "eni_#%d" % (ENI_BASE + n*ENI_STEP),
+                "op": "create",
+                "type": "SAI_OBJECT_TYPE_ENI",
+                "attributes": [
+                    "SAI_ENI_ATTR_CPS",
+                    "10000",
+                    "SAI_ENI_ATTR_PPS",
+                    "100000",
+                    "SAI_ENI_ATTR_FLOWS",
+                    "100000",
+                    "SAI_ENI_ATTR_ADMIN_STATE",
+                    "True",
+                    "SAI_ENI_ATTR_VM_UNDERLAY_DIP",
+                    "221.0.1.1",
+                    "SAI_ENI_ATTR_VM_VNI",
+                    "%d" % (VNI_BASE + n*VNI_STEP),
+                    "SAI_ENI_ATTR_VNET_ID",
+
+                    # NOTE reference to previously-created object in next line
+                    "$vnet_#%d" % (ENI_BASE + n*ENI_STEP),
+
+                    "SAI_ENI_ATTR_INBOUND_V4_STAGE1_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_INBOUND_V4_STAGE2_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_INBOUND_V4_STAGE3_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_INBOUND_V4_STAGE4_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_INBOUND_V4_STAGE5_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_INBOUND_V6_STAGE1_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_INBOUND_V6_STAGE2_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_INBOUND_V6_STAGE3_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_INBOUND_V6_STAGE4_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_INBOUND_V6_STAGE5_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_OUTBOUND_V4_STAGE1_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_OUTBOUND_V4_STAGE2_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_OUTBOUND_V4_STAGE3_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_OUTBOUND_V4_STAGE4_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_OUTBOUND_V4_STAGE5_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_OUTBOUND_V6_STAGE1_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_OUTBOUND_V6_STAGE2_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_OUTBOUND_V6_STAGE3_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_OUTBOUND_V6_STAGE4_DASH_ACL_GROUP_ID",
+                    "0",
+                    "SAI_ENI_ATTR_OUTBOUND_V6_STAGE5_DASH_ACL_GROUP_ID",
+                    "0"
+                ]
+            }
+        
+        yield \
+            {
+                "name": "eni_ether_address_map_#%d" % n,
+                "op": "create",
+                "type": "SAI_OBJECT_TYPE_ENI_ETHER_ADDRESS_MAP_ENTRY",
+                "key": {
+                    "switch_id": "$SWITCH_ID",
+                    "address": "00:1A:C5:00:00:%02d" % n,
+                },
+                "attributes": [
+                    "SAI_ENI_ETHER_ADDRESS_MAP_ENTRY_ATTR_ENI_ID",
+                    # NOTE reference to previously-created object in next line
+                    "$eni_#%d" % (ENI_BASE + n*ENI_STEP)
+                ]
+            }
 
 def make_remove_cmds():
     """ Return an array of remove commands """
