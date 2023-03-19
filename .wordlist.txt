@@ -632,6 +632,7 @@ vnets
 VNETs
 VNET's
 vni
+vnis
 VNI
 VNIC
 Vnic

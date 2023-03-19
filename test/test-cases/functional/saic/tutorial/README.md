@@ -252,7 +252,7 @@ where `make_remove_cmds()` again is a simple method which we explain in [Pattern
 
 ## [test_sai_enis_config_via_custom_gen.py](test_sai_enis_config_via_custom_gen.py)
 This test-case illustrates two concepts at once:
-- How to write a custom config "generator" which uses the Python `yield` command to emit a series of "SAI records" via an iterator. For more on this topc, see the [test\_sai\_vnets\_config\_via\_custom\_gen.py](#test_sai_vnets_config_via_custom_genpy) example above.
+- How to write a custom config "generator" which uses the Python `yield` command to emit a series of "SAI records" via an iterator. For more on this topic, see the [test\_sai\_vnets\_config\_via\_custom\_gen.py](#test_sai_vnets_config_via_custom_genpy) example above.
 - How to cache a created object's handle (keys or OID) and use it by reference in a subsequent object Create command.
 
 In this case, the object creation order and dependencies is as follows:
