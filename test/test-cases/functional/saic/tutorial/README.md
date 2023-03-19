@@ -12,7 +12,7 @@ See also:
   - [Configuration Tutorial Overview](#configuration-tutorial-overview)
   - [test\_sai\_vnets\_config\_via\_literal.py](#test_sai_vnets_config_via_literalpy)
   - [test\_sai\_vnets\_config\_via\_list\_comprehension.py](#test_sai_vnets_config_via_list_comprehensionpy)
-  - [test\_sai\_vnets\_config\_via\_list\_comprehension\_files.py](#test_sai_vnets_config_via_list_comprehension_filespy)
+  - [test\_sai\_vnets\_config\_via\_files.py](#test_sai_vnets_config_via_filespy)
   - [test\_sai\_vnets\_config\_via\_custom\_gen.py](#test_sai_vnets_config_via_custom_genpy)
   - [test\_sai\_enis\_config\_via\_custom\_gen.py](#test_sai_enis_config_via_custom_genpy)
   - [test\_sai\_vnet\_outbound\_small\_scale\_config\_via\_dpugen.py](#test_sai_vnet_outbound_small_scale_config_via_dpugenpy)
@@ -191,7 +191,7 @@ We then apply the remove commands the same way as create commands:
 results = [*dpu.process_commands(make_remove_cmds())]
 ```
 
-## [test_sai_vnets_config_via_list_comprehension_files.py](test_sai_vnets_config_via_list_comprehension_files.py)
+## [test_sai_vnets_config_via_files.py](test_sai_vnets_config_via_files.py)
 This test case uses JSON files created by [test_sai_vnets_config_via_list_comprehension.py](test_sai_vnets_config_via_list_comprehension.py) used in command-line mode. Using static JSON files can be useful for testing fixed configurations which are also easy to read for reference, edit manually, etc. This technique is not recommended for extremely large configurations, which might be better served using a streaming generator technique.
 
 See the figure below:
@@ -227,7 +227,7 @@ def make_create_cmds():
 
 The important distinction between this example and [test\_sai\_vnets\_config\_via\_list\_comprehension.py](#test_sai_vnets_config_via_list_comprehensionpy) is the following:
 
->List comprehensions are evaluated in-place to become complete in-memory data structures; generator expressions are evaluated one iteration at a time so can consume less memory. Python also supports [generator expressions](https://peps.python.org/pep-0289/) which combines list-comprehension compactness with generator memory-economy. However, list-comprehension expressions with multiple levels of nested loops can become unreadable and hard to maintain. Explicit `for` loops with embedded `yield`'s are much easier to read and maintain.
+>List comprehensions are evaluated in-place to become complete in-memory data structures; generator expressions are evaluated one `yield` at a time so can consume less memory. Python also supports [generator expressions](https://peps.python.org/pep-0289/) which combines list-comprehension compactness with generator memory-economy. However, list-comprehension expressions with multiple levels of nested loops can become unreadable and hard to maintain. Explicit `for` loops with embedded `yield`'s are much easier to read and maintain.
 
 
 In extreme examples, the use of `yield` can result in many orders of magnitude memory savings. See [dpugen](https://github.com/mgheorghe/dpugen) for a DASH-specific example.
@@ -295,7 +295,7 @@ Next, we create an ENI object. One of its attributes is the OID of the previousl
                     "$vnet_#%d" % (ENI_BASE + n*ENI_STEP),
                     ...
 ```
-Finally, we create an SAI_OBJECT_TYPE_ENI_ETHER_ADDRESS_MAP_ENTRY which needs an ENI reference as an attribute:
+Finally, we create an ENI_ETHER_ADDRESS_MAP object which needs an ENI reference as an attribute:
 ```
         yield \
             {
@@ -395,7 +395,7 @@ SAI Challenger looks up the OIDs it received from the DUT when it created the ob
 ## [test_sai_vnet_outbound_small_scale_config_via_dpugen_files.py](test_sai_vnet_outbound_small_scale_config_via_dpugen_files.py)
 
 This test-case illustrates reading previously-stored JSON files and applying them to the DUT.
-The [test_sai_vnet_outbound_small_scale_config_via_dpugen.py](test_sai_vnet_outbound_small_scale_config_via_dpugen.py) test case was run in command-line mode to emit JSON to stdout and store into files, as follows. The create and remove commands were stored in separate files to be used by this test-case. See the figure below.
+The [test\_sai\_vnet\_outbound\_small\_scale\_config\_via\_dpugen.py](#test_sai_vnet_outbound_small_scale_config_via_dpugenpy) test case was run in command-line mode to emit JSON to stdout and store into files, as follows. The create and remove commands were stored in separate files to be used by this test-case. See the figure below.
 
 ![dut-config-dpugen-files.svg](images/dut-config-dpugen-files.svg)
 
