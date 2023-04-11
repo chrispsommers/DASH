@@ -200,9 +200,9 @@ See the figure below:
 
 The commands used to create the files are as follows:
 ```
-./test_sai_vnets_config_via_list_comprehension.py -c -d1 1 -d2 16 > test_sai_vnets_config_via_files_create.json
+./test_sai_vnets_config_via_list_comprehension.py -c > test_sai_vnets_config_via_files_create.json
 
-./test_sai_vnets_config_via_list_comprehension.py -r -d1 1 -d2 16 > test_sai_vnets_config_via_files_remove.json
+./test_sai_vnets_config_via_list_comprehension.py -r > test_sai_vnets_config_via_files_remove.json
 ```
 
 The test case code to apply the create and remove commands consists merely of reading JSON into a variable, and feeding that variable (an array of SAI records) to the `process_commands()` method. We explain this technique in [Pattern: reading JSON config files and applying them](#pattern-reading-json-config-files-and-applying-them).
