@@ -160,10 +160,9 @@ DOCKER_RUN_SAITHRIFT_BLDR =\
 	-e SAIRPC_VENDOR_EXTRA_LIBS=$(SAIRPC_VENDOR_EXTRA_LIBS) \
 	$(DOCKER_SAITHRIFT_BLDR_IMG) \
 
-# TODO - create separate rules for headers, libsai.so
 .PHONY:sai
 
-sai: sai-clean sai-headers sai-meta libsai
+sai: sai-clean sai-headers libsai
 
 sai-headers: p4 docker-saithrift-bldr-image-exists | SAI/SAI
 	@echo "Generate SAI library headers and implementation..."
@@ -173,20 +172,6 @@ sai-headers: p4 docker-saithrift-bldr-image-exists | SAI/SAI
 		--name build_sai-$(USER) \
 		-w /SAI $(DOCKER_SAITHRIFT_BLDR_IMG) \
 	    ./generate_dash_api.sh
-
-sai-meta:
-	@echo "Generate SAI metadata..."
-	# hack - remove scripts which cause Git ownership failures in CI pipelines
-	# We don't need them, they're to check that SAI headers didn't experience enum changes etc.
-	sed -ie '/checkenumlock.sh/d' SAI/SAI/meta/Makefile
-	sed -ie '/checkancestry.sh/d' SAI/SAI/meta/Makefile
-	docker run \
-		$(DOCKER_FLAGS) \
-		--rm \
-		--name dash-saithrift-bldr-$(USER) \
-		-v $(PWD)/..:/dash -w /dash/dash-pipeline/SAI/SAI/meta \
-		$(DOCKER_SAITHRIFT_BLDR_IMG) \
-	    make
 
 # TODO - add SAI header dependencies
 libsai:
@@ -241,6 +226,10 @@ kill-switch:
 ###############################
 
 saithrift-server: docker-saithrift-bldr-image-exists
+	# hack - remove scripts which cause Git ownership failures in CI pipelines
+	# We don't need them, they're to check that SAI headers didn't experience enum changes etc.
+	sed -ie '/checkenumlock.sh/d' SAI/SAI/meta/Makefile
+	sed -ie '/checkancestry.sh/d' SAI/SAI/meta/Makefile
 	$(DOCKER_RUN_SAITHRIFT_BLDR) \
 	    make $@
 
